@@ -1,5 +1,6 @@
 package simulation;
 
+import OSPDataStruct.SimQueue;
 import agents.agentvyroby.*;
 import OSPABA.*;
 import agents.agentokolia.*;
@@ -8,7 +9,10 @@ import agents.agentmodelu.*;
 import agents.agentb.*;
 import agents.agenta.*;
 import agents.agentc.*;
+import furniture.Furniture;
+import furniture.Furnitures;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -132,5 +136,13 @@ public class MySimulation extends OSPABA.Simulation {
 
     public int getOrderId() {
         return orderId++;
+    }
+
+    public List<Furniture> getFurnitures() {
+        return agentA().getFurnitureList();
+    }
+
+    public SimQueue<Furnitures> getStorage() {
+        return agentA().getStorage();
     }
 }

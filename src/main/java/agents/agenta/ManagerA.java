@@ -5,6 +5,7 @@ import furniture.Furniture;
 import furniture.FurnitureState;
 import furniture.Furnitures;
 import simulation.*;
+import worker.Worker;
 import worker.WorkerPosition;
 import workingplace.WorkingPlace;
 
@@ -46,14 +47,23 @@ public class ManagerA extends OSPABA.Manager {
     public void processFinishProcessRezania(MessageForm message) {
         System.out.println("Rezanie skoncene v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.CUT);
-        message.setCode(Mc.prijemTovaru);
-        response(message);
+        Worker worker = ((MyMessage) message).getWorker();
+        ((MyMessage) message).setWorker(null);
 
         //najdem mu novu pracu
-        MyMessage newMessage = (MyMessage) message.createCopy();
-        newMessage.setWorkingPlace(null);
-        newMessage.setFurniture(null);
-        this.startWorking(newMessage);
+        if(!myAgent().getStorage().isEmpty()) {
+            MyMessage newMessage = (MyMessage) message.createCopy();
+            newMessage.setWorkingPlace(null);
+            newMessage.setFurniture(null);
+            newMessage.setWorker(worker);
+            this.startWorking(newMessage);
+        } else {
+            worker.setBusy(false);
+            //worker.setCurrentFurniture(null);
+        }
+
+        message.setCode(Mc.prijemTovaru);
+        response(message);
     }
 
     private void startWorking(MyMessage message) {

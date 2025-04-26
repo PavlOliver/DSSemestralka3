@@ -19,7 +19,7 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        workersA = new Workers(5);
+        workersA = new Workers(1);
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"

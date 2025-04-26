@@ -40,8 +40,8 @@ public class ManagerVyroby extends OSPABA.Manager {
     //meta! sender="AgentA", id="18", type="Response"
     public void processPrijemTovaru(MessageForm message) {
         System.out.println("Rezanie dokoncene moze ist pracovnik C:" + mySim().currentTime());
+        message.setCode(Mc.morenie);
 
-        //najprv pojdem najst novu pracu pre A
     }
 
     //meta! sender="AgentModelu", id="17", type="Request"
