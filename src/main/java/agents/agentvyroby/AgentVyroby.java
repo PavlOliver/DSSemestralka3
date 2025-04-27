@@ -9,6 +9,7 @@ import workingplace.WorkingPlaces;
 //meta! id="3"
 public class AgentVyroby extends OSPABA.Agent {
     Workers workersA;
+    Workers workersC;
 
     public AgentVyroby(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -19,7 +20,8 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        workersA = new Workers(1);
+        workersA = new Workers(5);
+        workersC = new Workers(5);
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -37,5 +39,9 @@ public class AgentVyroby extends OSPABA.Agent {
 
     public Workers getWorkersA() {
         return workersA;
+    }
+
+    public Workers getWorkersC() {
+        return workersC;
     }
 }

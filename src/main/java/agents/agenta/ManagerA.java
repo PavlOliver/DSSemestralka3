@@ -51,7 +51,7 @@ public class ManagerA extends OSPABA.Manager {
         ((MyMessage) message).setWorker(null);
 
         //najdem mu novu pracu
-        if(!myAgent().getStorage().isEmpty()) {
+        if (!myAgent().getStorage().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorkingPlace(null);
             newMessage.setFurniture(null);
@@ -94,8 +94,11 @@ public class ManagerA extends OSPABA.Manager {
         System.out.println("Agent A spracovava objednavku v case:" + mySim().currentTime());
         Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime());
         myAgent().getStorage().enqueue(furnitures);
-
-        startWorking((MyMessage) message);
+        if (((MyMessage) message).getWorker() != null)
+            startWorking((MyMessage) message);
+        else {
+            response(message); //sam neviem co robit ked neni pracovnik
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

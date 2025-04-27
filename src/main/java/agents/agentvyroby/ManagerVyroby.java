@@ -41,7 +41,8 @@ public class ManagerVyroby extends OSPABA.Manager {
     public void processPrijemTovaru(MessageForm message) {
         System.out.println("Rezanie dokoncene moze ist pracovnik C:" + mySim().currentTime());
         message.setCode(Mc.morenie);
-
+        message.setAddressee(mySim().findAgent(Id.agentC));
+        request(message);
     }
 
     //meta! sender="AgentModelu", id="17", type="Request"
@@ -51,10 +52,10 @@ public class ManagerVyroby extends OSPABA.Manager {
         if (worker != null) {
             worker.setBusy(true);
             ((MyMessage) message).setWorker(worker);
-            message.setCode(Mc.prijemTovaru);
-            message.setAddressee(mySim().findAgent(Id.agentA));
-            request(message);
         }
+        message.setCode(Mc.prijemTovaru);
+        message.setAddressee(mySim().findAgent(Id.agentA));
+        request(message); //skusim mu to poslat bez pracovnika aby to nahodil do skladu, keby neide prehod tie 3 riadky od tade hore hore
     }
 
     //meta! sender="AgentPresunov", id="23", type="Response"
