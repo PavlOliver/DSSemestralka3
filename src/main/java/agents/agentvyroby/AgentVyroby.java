@@ -3,7 +3,6 @@ package agents.agentvyroby;
 import OSPABA.*;
 import simulation.*;
 import worker.Workers;
-import workingplace.WorkingPlaces;
 
 
 //meta! id="3"
@@ -24,18 +23,18 @@ public class AgentVyroby extends OSPABA.Agent {
         workersC = new Workers(5);
     }
 
-    //meta! userInfo="Generated code: do not modify", tag="begin"
-    private void init() {
-        new ManagerVyroby(Id.managerVyroby, mySim(), this);
-        addOwnMessage(Mc.kovanie);
-        addOwnMessage(Mc.skladanie);
-        addOwnMessage(Mc.morenie);
-        addOwnMessage(Mc.prijemTovaru);
-        addOwnMessage(Mc.spracujObjednavku);
-        addOwnMessage(Mc.presun);
-    }
-
-    //meta! tag="end"
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	private void init()
+	{
+		new ManagerVyroby(Id.managerVyroby, mySim(), this);
+		addOwnMessage(Mc.kovanie);
+		addOwnMessage(Mc.skladanie);
+		addOwnMessage(Mc.morenie);
+		addOwnMessage(Mc.prijemTovaru);
+		addOwnMessage(Mc.spracujObjednavku);
+		addOwnMessage(Mc.presun);
+	}
+	//meta! tag="end"
 
     public Workers getWorkersA() {
         return workersA;

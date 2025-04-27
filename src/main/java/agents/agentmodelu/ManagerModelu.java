@@ -20,44 +20,47 @@ public class ManagerModelu extends OSPABA.Manager {
         }
     }
 
-    //meta! sender="AgentVyroby", id="17", type="Response"
-    public void processSpracujObjednavku(MessageForm message) {
+	//meta! sender="AgentVyroby", id="17", type="Response"
+	public void processSpracujObjednavku(MessageForm message) {
     }
 
-    //meta! sender="AgentOkolia", id="15", type="Notice"
-    public void processPrichodObjednavky(MessageForm message) {
+	//meta! sender="AgentOkolia", id="15", type="Notice"
+	public void processPrichodObjednavky(MessageForm message) {
         message.setCode(Mc.spracujObjednavku);
         message.setAddressee(mySim().findAgent(Id.agentVyroby));
         request(message);
     }
 
-    //meta! userInfo="Process messages defined in code", id="0"
-    public void processDefault(MessageForm message) {
+	//meta! userInfo="Process messages defined in code", id="0"
+	public void processDefault(MessageForm message) {
         switch (message.code()) {
         }
     }
 
-    //meta! userInfo="Generated code: do not modify", tag="begin"
-    public void init() {
-    }
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	public void init()
+	{
+	}
 
-    @Override
-    public void processMessage(MessageForm message) {
-        switch (message.code()) {
-            case Mc.prichodObjednavky:
-                processPrichodObjednavky(message);
-                break;
+	@Override
+	public void processMessage(MessageForm message)
+	{
+		switch (message.code())
+		{
+		case Mc.prichodObjednavky:
+			processPrichodObjednavky(message);
+		break;
 
-            case Mc.spracujObjednavku:
-                processSpracujObjednavku(message);
-                break;
+		case Mc.spracujObjednavku:
+			processSpracujObjednavku(message);
+		break;
 
-            default:
-                processDefault(message);
-                break;
-        }
-    }
-    //meta! tag="end"
+		default:
+			processDefault(message);
+		break;
+		}
+	}
+	//meta! tag="end"
 
     @Override
     public AgentModelu myAgent() {

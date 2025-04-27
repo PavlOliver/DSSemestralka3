@@ -48,87 +48,74 @@ public class MySimulation extends OSPABA.Simulation {
         super.simulationFinished();
     }
 
-    //meta! userInfo="Generated code: do not modify", tag="begin"
-    private void init() {
-        setAgentModelu(new AgentModelu(Id.agentModelu, this, null));
-        setAgentOkolia(new AgentOkolia(Id.agentOkolia, this, agentModelu()));
-        setAgentVyroby(new AgentVyroby(Id.agentVyroby, this, agentModelu()));
-        setAgentA(new AgentA(Id.agentA, this, agentVyroby()));
-        setAgentPresunov(new AgentPresunov(Id.agentPresunov, this, agentVyroby()));
-        setAgentB(new AgentB(Id.agentB, this, agentVyroby()));
-        setAgentC(new AgentC(Id.agentC, this, agentVyroby()));
-    }
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	private void init()
+	{
+		setAgentModelu(new AgentModelu(Id.agentModelu, this, null));
+		setAgentOkolia(new AgentOkolia(Id.agentOkolia, this, agentModelu()));
+		setAgentVyroby(new AgentVyroby(Id.agentVyroby, this, agentModelu()));
+		setAgentA(new AgentA(Id.agentA, this, agentVyroby()));
+		setAgentPresunov(new AgentPresunov(Id.agentPresunov, this, agentVyroby()));
+		setAgentB(new AgentB(Id.agentB, this, agentVyroby()));
+		setAgentC(new AgentC(Id.agentC, this, agentVyroby()));
+	}
 
-    private AgentModelu _agentModelu;
+	private AgentModelu _agentModelu;
 
-    public AgentModelu agentModelu() {
-        return _agentModelu;
-    }
+public AgentModelu agentModelu()
+	{ return _agentModelu; }
 
-    public void setAgentModelu(AgentModelu agentModelu) {
-        _agentModelu = agentModelu;
-    }
+	public void setAgentModelu(AgentModelu agentModelu)
+	{_agentModelu = agentModelu; }
 
-    private AgentOkolia _agentOkolia;
+	private AgentOkolia _agentOkolia;
 
-    public AgentOkolia agentOkolia() {
-        return _agentOkolia;
-    }
+public AgentOkolia agentOkolia()
+	{ return _agentOkolia; }
 
-    public void setAgentOkolia(AgentOkolia agentOkolia) {
-        _agentOkolia = agentOkolia;
-    }
+	public void setAgentOkolia(AgentOkolia agentOkolia)
+	{_agentOkolia = agentOkolia; }
 
-    private AgentVyroby _agentVyroby;
+	private AgentVyroby _agentVyroby;
 
-    public AgentVyroby agentVyroby() {
-        return _agentVyroby;
-    }
+public AgentVyroby agentVyroby()
+	{ return _agentVyroby; }
 
-    public void setAgentVyroby(AgentVyroby agentVyroby) {
-        _agentVyroby = agentVyroby;
-    }
+	public void setAgentVyroby(AgentVyroby agentVyroby)
+	{_agentVyroby = agentVyroby; }
 
-    private AgentA _agentA;
+	private AgentA _agentA;
 
-    public AgentA agentA() {
-        return _agentA;
-    }
+public AgentA agentA()
+	{ return _agentA; }
 
-    public void setAgentA(AgentA agentA) {
-        _agentA = agentA;
-    }
+	public void setAgentA(AgentA agentA)
+	{_agentA = agentA; }
 
-    private AgentPresunov _agentPresunov;
+	private AgentPresunov _agentPresunov;
 
-    public AgentPresunov agentPresunov() {
-        return _agentPresunov;
-    }
+public AgentPresunov agentPresunov()
+	{ return _agentPresunov; }
 
-    public void setAgentPresunov(AgentPresunov agentPresunov) {
-        _agentPresunov = agentPresunov;
-    }
+	public void setAgentPresunov(AgentPresunov agentPresunov)
+	{_agentPresunov = agentPresunov; }
 
-    private AgentB _agentB;
+	private AgentB _agentB;
 
-    public AgentB agentB() {
-        return _agentB;
-    }
+public AgentB agentB()
+	{ return _agentB; }
 
-    public void setAgentB(AgentB agentB) {
-        _agentB = agentB;
-    }
+	public void setAgentB(AgentB agentB)
+	{_agentB = agentB; }
 
-    private AgentC _agentC;
+	private AgentC _agentC;
 
-    public AgentC agentC() {
-        return _agentC;
-    }
+public AgentC agentC()
+	{ return _agentC; }
 
-    public void setAgentC(AgentC agentC) {
-        _agentC = agentC;
-    }
-    //meta! tag="end"
+	public void setAgentC(AgentC agentC)
+	{_agentC = agentC; }
+	//meta! tag="end"
 
     public Random getSeedGenerator() {
         return seedGenerator;

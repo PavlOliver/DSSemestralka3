@@ -97,7 +97,7 @@ public class ManagerA extends OSPABA.Manager {
         if (((MyMessage) message).getWorker() != null)
             startWorking((MyMessage) message);
         else {
-            response(message); //sam neviem co robit ked neni pracovnik
+            //response(message); //sam neviem co robit ked neni pracovnik
         }
     }
 

@@ -17,9 +17,13 @@ public class Mc extends OSPABA.IdList
 	public static final int dokoncenieKusuTovaru = 1;
 
 	public static final int presunDoSkladu = 2;
+	public static final int presunWP = 3;
 
-	public static final int pripravaMaterialu = 3;
-	public static final int koniecRezania = 4;
+	public static final int pripravaMaterialu = 4;
+	public static final int koniecRezania = 5;
+
+	public static final int koniecMorenia = 6;
+	public static final int koniecLakovania = 7;
 
 	// 1..1000 range reserved for user
 }

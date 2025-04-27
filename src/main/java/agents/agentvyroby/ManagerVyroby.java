@@ -40,6 +40,11 @@ public class ManagerVyroby extends OSPABA.Manager {
     //meta! sender="AgentA", id="18", type="Response"
     public void processPrijemTovaru(MessageForm message) {
         System.out.println("Rezanie dokoncene moze ist pracovnik C:" + mySim().currentTime());
+        Worker worker = myAgent().getWorkersC().getFreeWorker();
+        if (worker != null) {
+            worker.setBusy(true);
+            ((MyMessage) message).setWorker(worker);
+        }
         message.setCode(Mc.morenie);
         message.setAddressee(mySim().findAgent(Id.agentC));
         request(message);
@@ -77,6 +82,17 @@ public class ManagerVyroby extends OSPABA.Manager {
         request(message);
     }
 
+    //meta! sender="AgentB", id="54", type="Request"
+    public void processPresunAgentB(MessageForm message) {
+    }
+
+    //meta! sender="AgentC", id="56", type="Request"
+    public void processPresunAgentC(MessageForm message) {
+        System.out.println("Agent C poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
+        message.setAddressee(mySim().findAgent(Id.agentPresunov));
+        request(message);
+    }
+
     //meta! userInfo="Generated code: do not modify", tag="begin"
     public void init() {
     }
@@ -90,8 +106,16 @@ public class ManagerVyroby extends OSPABA.Manager {
 
             case Mc.presun:
                 switch (message.sender().id()) {
+                    case Id.agentB:
+                        processPresunAgentB(message);
+                        break;
+
                     case Id.agentPresunov:
                         processPresunAgentPresunov(message);
+                        break;
+
+                    case Id.agentC:
+                        processPresunAgentC(message);
                         break;
 
                     case Id.agentA:

@@ -7,7 +7,6 @@ import furniture.Furniture;
 import furniture.Furnitures;
 import simulation.*;
 import agents.agenta.continualassistants.*;
-import worker.Workers;
 import workingplace.WorkingPlaces;
 
 import java.util.ArrayList;
@@ -36,6 +35,8 @@ public class AgentA extends OSPABA.Agent {
         furnitureList = new ArrayList<>();
 
         workingPlaces = new WorkingPlaces(20);
+        addOwnMessage(Mc.pripravaMaterialu);
+        addOwnMessage(Mc.koniecRezania);
 
     }
 
@@ -48,8 +49,6 @@ public class AgentA extends OSPABA.Agent {
         addOwnMessage(Mc.kovanie);
         addOwnMessage(Mc.prijemTovaru);
         addOwnMessage(Mc.presun);
-        addOwnMessage(Mc.pripravaMaterialu);
-        addOwnMessage(Mc.koniecRezania);
     }
 
     //meta! tag="end"

@@ -8,7 +8,7 @@ import OSPABA.Process;
 
 //meta! id="33"
 public class ProcessPripravy extends OSPABA.Process {
-    private final TriangularRNG preparationTimeRNG = new TriangularRNG(300d, 900d, 500d);
+    private final TriangularRNG preparationTimeRNG = new TriangularRNG(300d, 900d, 500d, ((MySimulation) mySim()).getSeedGenerator());
 
     public ProcessPripravy(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);

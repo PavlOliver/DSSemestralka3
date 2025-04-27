@@ -1,7 +1,11 @@
 package agents.agentc;
 
 import OSPABA.*;
+import OSPRNG.UniformContinuousRNG;
+import furniture.Furniture;
+import furniture.FurnitureState;
 import simulation.*;
+import worker.Worker;
 
 //meta! id="7"
 public class ManagerC extends OSPABA.Manager {
@@ -26,10 +30,71 @@ public class ManagerC extends OSPABA.Manager {
 
     //meta! sender="ProcessMorenie", id="44", type="Finish"
     public void processFinishProcessMorenie(MessageForm message) {
+        System.out.println("Pracovnik skoncil morenie v case:" + mySim().currentTime());
+        ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED);
+
+        UniformContinuousRNG rng = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
+
+        if (rng.sample() <= 0.15) { //rng.sample()
+            message.setAddressee(myAgent().findAssistant(Id.processLakovanie));
+            startContinualAssistant(message);
+        } else {
+            System.out.println("Pracovnik C skoncil pracu Morenim");
+
+            Worker worker = ((MyMessage) message).getWorker();
+            ((MyMessage) message).setWorker(null);
+
+            //najdem mu novu pracu
+            if (!myAgent().getQueueMorenia().isEmpty()) {
+                MyMessage newMessage = (MyMessage) message.createCopy();
+
+                newMessage.setWorker(worker);
+                Furniture furniture = myAgent().getQueueMorenia().dequeue();
+                newMessage.setFurniture(furniture);
+                newMessage.setWorkingPlace(furniture.getWorkingPlace());
+
+                newMessage.setCode(Mc.presun);
+                newMessage.setAddressee(myAgent().parent());
+                request(newMessage);
+            } else {
+                System.out.println("Fronta je prazdna");
+                worker.setBusy(false);
+                //worker.setCurrentFurniture(null);
+            }
+
+            message.setCode(Mc.morenie);
+            response(message);
+        }
     }
 
     //meta! sender="ProcessLakovanie", id="46", type="Finish"
     public void processFinishProcessLakovanie(MessageForm message) {
+        System.out.println("Pracovnik C skoncil pracu Lakovanim");
+        ((MyMessage) message).getFurniture().setState(FurnitureState.LACQUERED);
+
+
+        Worker worker = ((MyMessage) message).getWorker();
+        ((MyMessage) message).setWorker(null);
+
+        //najdem mu novu pracu
+        if (!myAgent().getQueueMorenia().isEmpty()) {
+            MyMessage newMessage = (MyMessage) message.createCopy();
+
+            newMessage.setWorker(worker);
+            Furniture furniture = myAgent().getQueueMorenia().dequeue();
+            newMessage.setFurniture(furniture);
+            newMessage.setWorkingPlace(furniture.getWorkingPlace());
+
+            newMessage.setCode(Mc.presun);
+            newMessage.setAddressee(myAgent().parent());
+            request(newMessage);
+        } else {
+            worker.setBusy(false);
+            //worker.setCurrentFurniture(null);
+        }
+
+        message.setCode(Mc.morenie);
+        response(message);
     }
 
     //meta! sender="ProcessKovanie", id="48", type="Finish"
@@ -38,15 +103,31 @@ public class ManagerC extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="21", type="Request"
     public void processMorenie(MessageForm message) {
-        message.setCode(Mc.presun);
-        message.setAddressee(mySim().findAgent(Id.agentVyroby));
-        request(message);
+        System.out.println("Ziadam presun na morenie v case:" + mySim().currentTime());
+        //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
+        if (((MyMessage) message).getWorker() != null) {
+            message.setCode(Mc.presun);
+            message.setAddressee(mySim().findAgent(Id.agentVyroby));
+            request(message);
+        } else {
+            myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
+            //response(message); //nic nezrobilo ani sa robit nebude
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"
     public void processDefault(MessageForm message) {
         switch (message.code()) {
+
         }
+    }
+
+    //meta! sender="AgentVyroby", id="56", type="Response"
+    public void processPresun(MessageForm message) {
+        System.out.println("Pracovnik je na mieste " + mySim().currentTime());
+        message.setCode(Mc.morenie);
+        message.setAddressee(myAgent().findAssistant(Id.processMorenie));
+        startContinualAssistant(message);
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -74,6 +155,10 @@ public class ManagerC extends OSPABA.Manager {
 
             case Mc.kovanie:
                 processKovanie(message);
+                break;
+
+            case Mc.presun:
+                processPresun(message);
                 break;
 
             case Mc.morenie:

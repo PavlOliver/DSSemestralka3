@@ -3,6 +3,7 @@ package agents.agentpresunov;
 import OSPABA.*;
 import furniture.FurnitureState;
 import simulation.*;
+import worker.WorkerPosition;
 
 //meta! id="5"
 public class ManagerPresunov extends OSPABA.Manager {
@@ -23,6 +24,9 @@ public class ManagerPresunov extends OSPABA.Manager {
 
     //meta! sender="ProcessPresunPM", id="31", type="Finish"
     public void processFinishProcessPresunPM(MessageForm message) {
+        System.out.println("Pracovnik sa presunul na PM v case:" + mySim().currentTime());
+        message.setCode(Mc.presun);
+        response(message);
     }
 
     //meta! sender="ProcessPresunSklad", id="29", type="Finish"
@@ -39,6 +43,13 @@ public class ManagerPresunov extends OSPABA.Manager {
         if (state == FurnitureState.PACKED ||
                 state == FurnitureState.UNPACKED) {
             message.setAddressee(myAgent().findAssistant(Id.processPresunSklad));
+            startContinualAssistant(message);
+        } else if (state == FurnitureState.CUT) {
+            if (((MyMessage) message).getWorker().getPosition() == WorkerPosition.STORAGE) {
+                message.setAddressee(myAgent().findAssistant(Id.processPresunSklad));
+            } else {
+                message.setAddressee(myAgent().findAssistant(Id.processPresunPM));
+            }
             startContinualAssistant(message);
         }
     }

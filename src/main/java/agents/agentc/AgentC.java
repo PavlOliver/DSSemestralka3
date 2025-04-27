@@ -4,14 +4,15 @@ import OSPABA.*;
 import OSPDataStruct.SimQueue;
 import OSPStat.WStat;
 import agents.agentc.continualassistants.*;
+import furniture.Furniture;
 import furniture.Furnitures;
 import simulation.*;
-import workingplace.WorkingPlaces;
+
 
 
 //meta! id="7"
 public class AgentC extends OSPABA.Agent {
-    private SimQueue<Furnitures> queueMorenia;
+    private SimQueue<Furniture> queueMorenia;
     private WStat dlykaMorenieQueueStat;
 
     public AgentC(int id, Simulation mySim, Agent parent) {
@@ -25,20 +26,24 @@ public class AgentC extends OSPABA.Agent {
         // Setup component for the next replication
         dlykaMorenieQueueStat = new WStat(mySim());
         queueMorenia = new SimQueue<>(dlykaMorenieQueueStat);
+        addOwnMessage(Mc.koniecMorenia);
+        addOwnMessage(Mc.koniecLakovania);
     }
 
-    //meta! userInfo="Generated code: do not modify", tag="begin"
-    private void init() {
-        new ManagerC(Id.managerC, mySim(), this);
-        new ProcessKovanie(Id.processKovanie, mySim(), this);
-        new ProcessMorenie(Id.processMorenie, mySim(), this);
-        new ProcessLakovanie(Id.processLakovanie, mySim(), this);
-        addOwnMessage(Mc.kovanie);
-        addOwnMessage(Mc.morenie);
-    }
-    //meta! tag="end"
+	//meta! userInfo="Generated code: do not modify", tag="begin"
+	private void init()
+	{
+		new ManagerC(Id.managerC, mySim(), this);
+		new ProcessKovanie(Id.processKovanie, mySim(), this);
+		new ProcessMorenie(Id.processMorenie, mySim(), this);
+		new ProcessLakovanie(Id.processLakovanie, mySim(), this);
+		addOwnMessage(Mc.kovanie);
+		addOwnMessage(Mc.morenie);
+		addOwnMessage(Mc.presun);
+	}
+	//meta! tag="end"
 
-    public SimQueue<Furnitures> getQueueMorenia() {
+    public SimQueue<Furniture> getQueueMorenia() {
 		return queueMorenia;
 	}
 

@@ -7,7 +7,7 @@ import simulation.*;
 
 //meta! id="25"
 public class PlanovacPrichodov extends OSPABA.Scheduler {
-    private ExponentialRNG arrivalGenerator;
+    private final ExponentialRNG arrivalGenerator;
 
     public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);

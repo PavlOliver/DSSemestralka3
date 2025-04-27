@@ -42,6 +42,11 @@ public class ManagerB extends OSPABA.Manager
 		}
 	}
 
+	//meta! sender="AgentVyroby", id="54", type="Response"
+	public void processPresun(MessageForm message)
+	{
+	}
+
 	//meta! userInfo="Generated code: do not modify", tag="begin"
 	public void init()
 	{
@@ -54,6 +59,10 @@ public class ManagerB extends OSPABA.Manager
 		{
 		case Mc.skladanie:
 			processSkladanie(message);
+		break;
+
+		case Mc.presun:
+			processPresun(message);
 		break;
 
 		case Mc.finish:

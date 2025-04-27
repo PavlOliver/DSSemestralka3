@@ -28,6 +28,7 @@ public class AgentB extends OSPABA.Agent
 		new ManagerB(Id.managerB, mySim(), this);
 		new ProcessSkladania(Id.processSkladania, mySim(), this);
 		addOwnMessage(Mc.skladanie);
+		addOwnMessage(Mc.presun);
 	}
 	//meta! tag="end"
 }
