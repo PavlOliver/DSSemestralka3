@@ -76,7 +76,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                 protected Void doInBackground() {
                     simulation = new MySimulation();
                     simulation.registerDelegate(MainFrame.this);
-                    simulation.setSimSpeed(10000d, 0.01d);
+                    simulation.setSimSpeed(10000d, 0.001d);
                     simulation.simulate(Integer.parseInt(replicationCountField.getText()));
                     return null;
                 }

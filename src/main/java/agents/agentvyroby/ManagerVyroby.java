@@ -1,6 +1,8 @@
 package agents.agentvyroby;
 
 import OSPABA.*;
+import furniture.Furniture;
+import furniture.FurnitureType;
 import simulation.*;
 import worker.Worker;
 
@@ -31,10 +33,47 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentB", id="20", type="Response"
     public void processSkladanie(MessageForm message) {
+        Furniture furniture = ((MyMessage) message).getFurniture();
+        if (furniture.getType() == FurnitureType.WARDROBE) {
+            System.out.println("Skladanie dokoncene moze ist pracovnik A/C:" + mySim().currentTime());
+            Worker worker = myAgent().getWorkersC().getFreeWorker();
+            if (worker == null) {
+                worker = myAgent().getWorkersA().getFreeWorker();
+                message.setAddressee(mySim().findAgent(Id.agentA));
+            } else {
+                message.setAddressee(mySim().findAgent(Id.agentC));
+            }
+            if (worker != null) {
+                worker.setBusy(true);
+                ((MyMessage) message).setWorker(worker);
+                ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
+                message.setCode(Mc.kovanie);
+                request(message);
+            } else {
+                myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
+            }
+
+        } else {
+            System.out.println("Skladanie dokoncene uplne:" + mySim().currentTime());
+            ((MyMessage) message).getWorkingPlace().setCurrentWorker(null); //todo este nvm ci to nechat tu alebo dat do agentaB
+            message.setCode(Mc.spracujObjednavku); //asi treba nvm
+            response(message);
+        }
     }
 
     //meta! sender="AgentC", id="21", type="Response"
     public void processMorenie(MessageForm message) {
+        System.out.println("Morenie dokoncene moze ist pracovnik B:" + mySim().currentTime());
+        Worker worker = myAgent().getWorkersB().getFreeWorker();
+        if (worker != null) {
+            worker.setBusy(true);
+            ((MyMessage) message).setWorker(worker);
+            ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
+        }
+        message.setCode(Mc.skladanie);
+        message.setAddressee(mySim().findAgent(Id.agentB));
+        request(message);
+
     }
 
     //meta! sender="AgentA", id="18", type="Response"
@@ -85,6 +124,9 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentB", id="54", type="Request"
     public void processPresunAgentB(MessageForm message) {
+        System.out.println("Agent B poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
+        message.setAddressee(mySim().findAgent(Id.agentPresunov));
+        request(message);
     }
 
     //meta! sender="AgentC", id="56", type="Request"

@@ -22,6 +22,8 @@ public class ManagerModelu extends OSPABA.Manager {
 
 	//meta! sender="AgentVyroby", id="17", type="Response"
 	public void processSpracujObjednavku(MessageForm message) {
+		System.out.println("Nabytok " + ((MyMessage) message).getFurniture().getId() + " bol uplne dokonceny v case:" + mySim().currentTime());
+
     }
 
 	//meta! sender="AgentOkolia", id="15", type="Notice"

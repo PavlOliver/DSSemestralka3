@@ -26,6 +26,7 @@ public class ManagerC extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="22", type="Request"
     public void processKovanie(MessageForm message) {
+
     }
 
     //meta! sender="ProcessMorenie", id="44", type="Finish"
@@ -42,7 +43,6 @@ public class ManagerC extends OSPABA.Manager {
         } else {
             System.out.println("Pracovnik C skoncil pracu Morenim");
             ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
-
 
             Worker worker = ((MyMessage) message).getWorker();
             ((MyMessage) message).setWorker(null);

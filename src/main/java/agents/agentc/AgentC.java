@@ -5,15 +5,17 @@ import OSPDataStruct.SimQueue;
 import OSPStat.WStat;
 import agents.agentc.continualassistants.*;
 import furniture.Furniture;
-import furniture.Furnitures;
 import simulation.*;
 
+import java.util.PriorityQueue;
 
 
 //meta! id="7"
 public class AgentC extends OSPABA.Agent {
     private SimQueue<Furniture> queueMorenia;
-    private WStat dlykaMorenieQueueStat;
+    private WStat dlzkaMorenieQueueStat;
+
+    private PriorityQueue<Furniture> queueMoreniaPriority;
 
     public AgentC(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -24,8 +26,11 @@ public class AgentC extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        dlykaMorenieQueueStat = new WStat(mySim());
-        queueMorenia = new SimQueue<>(dlykaMorenieQueueStat);
+        dlzkaMorenieQueueStat = new WStat(mySim());
+        queueMorenia = new SimQueue<>(dlzkaMorenieQueueStat);
+
+        queueMoreniaPriority = new PriorityQueue<>();
+
         addOwnMessage(Mc.koniecMorenia);
         addOwnMessage(Mc.koniecLakovania);
     }
@@ -46,5 +51,9 @@ public class AgentC extends OSPABA.Agent {
     public SimQueue<Furniture> getQueueMorenia() {
 		return queueMorenia;
 	}
+
+    public PriorityQueue<Furniture> getQueueMoreniaPriority() {
+        return queueMoreniaPriority;
+    }
 
 }

@@ -2,7 +2,7 @@ package furniture;
 
 import workingplace.WorkingPlace;
 
-public class Furniture {
+public class Furniture implements Comparable<Furniture> {
     private final int id;
     private final int orderId;
     private final FurnitureType type;
@@ -49,5 +49,13 @@ public class Furniture {
 
     public void setWorkingPlace(WorkingPlace workingPlace) {
         this.workingPlace = workingPlace;
+    }
+
+    @Override
+    public int compareTo(Furniture o) {
+        int cmp = Integer.compare(this.orderId, o.orderId);
+        if (cmp != 0)
+            return cmp;
+        return Integer.compare(this.id, o.id);
     }
 }
