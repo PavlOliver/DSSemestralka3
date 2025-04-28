@@ -33,6 +33,7 @@ public class ManagerC extends OSPABA.Manager {
         System.out.println("Pracovnik skoncil morenie v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED);
 
+
         UniformContinuousRNG rng = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
 
         if (rng.sample() <= 0.15) { //rng.sample()
@@ -40,6 +41,8 @@ public class ManagerC extends OSPABA.Manager {
             startContinualAssistant(message);
         } else {
             System.out.println("Pracovnik C skoncil pracu Morenim");
+            ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
+
 
             Worker worker = ((MyMessage) message).getWorker();
             ((MyMessage) message).setWorker(null);
@@ -52,6 +55,7 @@ public class ManagerC extends OSPABA.Manager {
                 Furniture furniture = myAgent().getQueueMorenia().dequeue();
                 newMessage.setFurniture(furniture);
                 newMessage.setWorkingPlace(furniture.getWorkingPlace());
+                newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
 
                 newMessage.setCode(Mc.presun);
                 newMessage.setAddressee(myAgent().parent());
@@ -71,7 +75,7 @@ public class ManagerC extends OSPABA.Manager {
     public void processFinishProcessLakovanie(MessageForm message) {
         System.out.println("Pracovnik C skoncil pracu Lakovanim");
         ((MyMessage) message).getFurniture().setState(FurnitureState.LACQUERED);
-
+        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
 
         Worker worker = ((MyMessage) message).getWorker();
         ((MyMessage) message).setWorker(null);
@@ -84,6 +88,7 @@ public class ManagerC extends OSPABA.Manager {
             Furniture furniture = myAgent().getQueueMorenia().dequeue();
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
+            newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
 
             newMessage.setCode(Mc.presun);
             newMessage.setAddressee(myAgent().parent());

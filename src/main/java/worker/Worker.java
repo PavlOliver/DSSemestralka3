@@ -7,12 +7,14 @@ public class Worker {
     private boolean isBusy;
     private Furniture currentFurniture;
     private WorkerPosition position;
+    private char type;
 
-    public Worker(int id) {
+    public Worker(int id, char type) {
         this.id = id;
         this.isBusy = false;
         this.currentFurniture = null;
         this.position = WorkerPosition.STORAGE;
+        this.type = type;
     }
 
     public boolean isBusy() {
@@ -37,5 +39,9 @@ public class Worker {
 
     public void setPosition(WorkerPosition position) {
         this.position = position;
+    }
+
+    public String toString() {
+        return "Worker " + id + " (" + type + ")";
     }
 }

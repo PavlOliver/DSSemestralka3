@@ -5,9 +5,11 @@ import OSPABA.Simulation;
 import OSPDataStruct.SimQueue;
 import gui.furniture.FurnitureTablePanel;
 import gui.furniture.FurnituresTablePanel;
+import gui.workingplace.WorkingPlacesPanel;
 import simulation.Mc;
 import simulation.MySimulation;
 import simulation.TimeFunctions;
+import workingplace.WorkingPlaces;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private MySimulation simulation;
     private FurnitureTablePanel furnitureTablePanel;
     private FurnituresTablePanel storageTablePanel;
+    private WorkingPlacesPanel workingPlacesPanel;
 
     //labels
     private JLabel simulationTimeLabel;
@@ -52,6 +55,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         this.storageTablePanel = new FurnituresTablePanel(new SimQueue<>());
         centerPanel.add(storageTablePanel);
 
+        this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0));
+        centerPanel.add(workingPlacesPanel);
+
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         controlPanel.setBorder(BorderFactory.createTitledBorder("Control"));
@@ -70,7 +76,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                 protected Void doInBackground() {
                     simulation = new MySimulation();
                     simulation.registerDelegate(MainFrame.this);
-                    simulation.setSimSpeed(10000d, 0.001d);
+                    simulation.setSimSpeed(10000d, 0.01d);
                     simulation.simulate(Integer.parseInt(replicationCountField.getText()));
                     return null;
                 }
@@ -118,6 +124,8 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.simulationTimeLabel.setText("Simulation time: " + TimeFunctions.toHumanTime(simulation.currentTime()));
             this.furnitureTablePanel.setFurnitureList(((MySimulation) simulation).getFurnitures());
             this.storageTablePanel.setQueue(((MySimulation) simulation).getStorage());
+            this.workingPlacesPanel.setWorkingPlaces(((MySimulation) simulation).getWorkingPlaces());
+
         });
         //this.simulationTimeLabel.setText("Simulation time: " + Mc.toHumanTime(simulation.currentTime()));
     }

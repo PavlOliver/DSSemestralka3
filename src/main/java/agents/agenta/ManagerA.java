@@ -49,6 +49,7 @@ public class ManagerA extends OSPABA.Manager {
         ((MyMessage) message).getFurniture().setState(FurnitureState.CUT);
         Worker worker = ((MyMessage) message).getWorker();
         ((MyMessage) message).setWorker(null);
+        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
 
         //najdem mu novu pracu
         if (!myAgent().getStorage().isEmpty()) {

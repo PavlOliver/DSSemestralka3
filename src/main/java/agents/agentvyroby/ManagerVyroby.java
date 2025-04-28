@@ -44,6 +44,7 @@ public class ManagerVyroby extends OSPABA.Manager {
         if (worker != null) {
             worker.setBusy(true);
             ((MyMessage) message).setWorker(worker);
+            ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
         }
         message.setCode(Mc.morenie);
         message.setAddressee(mySim().findAgent(Id.agentC));

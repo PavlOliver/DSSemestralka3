@@ -11,6 +11,7 @@ import agents.agenta.*;
 import agents.agentc.*;
 import furniture.Furniture;
 import furniture.Furnitures;
+import workingplace.WorkingPlaces;
 
 import java.util.List;
 import java.util.Random;
@@ -132,4 +133,8 @@ public AgentC agentC()
     public SimQueue<Furnitures> getStorage() {
         return agentA().getStorage();
     }
+
+	public WorkingPlaces getWorkingPlaces() {
+		return agentA().getWorkingPlaces();
+	}
 }

@@ -35,6 +35,6 @@ public class WorkingPlace {
     }
 
     public boolean isOccupied() {
-        return currentWorker != null && currentFurniture != null;
+        return currentFurniture != null;//urrentWorker != null && currentFurniture != null;
     }
 }
