@@ -25,5 +25,9 @@ public class Mc extends OSPABA.IdList {
     public static final int koniecLakovania = 7;
     public static final int koniecSkladania = 8;
 
+    public static final int koniecKovania = 9;
+
+    public static final long randomSeed = 123456789L;
+
     // 1..1000 range reserved for user
 }

@@ -7,6 +7,10 @@ import furniture.Furniture;
 import simulation.*;
 import worker.Workers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+
 
 //meta! id="3"
 public class AgentVyroby extends OSPABA.Agent {
@@ -14,7 +18,10 @@ public class AgentVyroby extends OSPABA.Agent {
     Workers workersC;
     Workers workersB;
     private SimQueue<Furniture> queueKovania;
+    private PriorityQueue<Furniture> queueKovaniaPriority;
     private WStat dlzkaKovaniaQueueStat;
+    private List<Furniture> furnitureList;
+
 
     public AgentVyroby(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -25,12 +32,16 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        workersA = new Workers(5, 'A');
-        workersC = new Workers(5, 'C');
+        workersA = new Workers(15, 'A');
+        workersC = new Workers(40, 'C');
         workersB = new Workers(5, 'B');
 
         dlzkaKovaniaQueueStat = new WStat(mySim());
         queueKovania = new SimQueue<>(dlzkaKovaniaQueueStat);
+        queueKovaniaPriority = new PriorityQueue<>();
+
+        furnitureList = new ArrayList<>();
+
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -59,5 +70,17 @@ public class AgentVyroby extends OSPABA.Agent {
 
     public SimQueue<Furniture> getQueueKovania() {
         return queueKovania;
+    }
+
+    public void addFurniture(Furniture furniture) {
+        furnitureList.add(furniture);
+    }
+
+    public List<Furniture> getFurnitureList() {
+        return furnitureList;
+    }
+
+    public PriorityQueue<Furniture> getQueueKovaniaPriority() {
+        return queueKovaniaPriority;
     }
 }

@@ -25,10 +25,14 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentA", id="19", type="Response"
     public void processKovanieAgentA(MessageForm message) {
+        message.setCode(Mc.spracujObjednavku);
+        response(message);
     }
 
     //meta! sender="AgentC", id="22", type="Response"
     public void processKovanieAgentC(MessageForm message) {
+        message.setCode(Mc.spracujObjednavku);
+        response(message);
     }
 
     //meta! sender="AgentB", id="20", type="Response"
@@ -50,7 +54,8 @@ public class ManagerVyroby extends OSPABA.Manager {
                 message.setCode(Mc.kovanie);
                 request(message);
             } else {
-                myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
+                //myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
+                myAgent().getQueueKovaniaPriority().add(((MyMessage) message).getFurniture());
             }
 
         } else {
@@ -95,7 +100,7 @@ public class ManagerVyroby extends OSPABA.Manager {
         System.out.println("Agent vyroby spracovava objednavku v case:" + mySim().currentTime());
         Worker worker = myAgent().getWorkersA().getFreeWorker();
         if (worker != null) {
-            worker.setBusy(true);
+            //worker.setBusy(true); !!!!!!!
             ((MyMessage) message).setWorker(worker);
         }
         message.setCode(Mc.prijemTovaru);

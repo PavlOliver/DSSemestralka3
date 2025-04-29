@@ -44,15 +44,7 @@ public class ManagerPresunov extends OSPABA.Manager {
                 state == FurnitureState.UNPACKED) {
             message.setAddressee(myAgent().findAssistant(Id.processPresunSklad));
             startContinualAssistant(message);
-        } else if (state == FurnitureState.CUT) {
-            if (((MyMessage) message).getWorker().getPosition() == WorkerPosition.STORAGE) {
-                message.setAddressee(myAgent().findAssistant(Id.processPresunSklad));
-            } else {
-                message.setAddressee(myAgent().findAssistant(Id.processPresunPM));
-            }
-            startContinualAssistant(message);
-        } else if (state == FurnitureState.PICKLED ||
-                state == FurnitureState.LACQUERED) {
+        } else {
             if (((MyMessage) message).getWorker().getPosition() == WorkerPosition.STORAGE) {
                 message.setAddressee(myAgent().findAssistant(Id.processPresunSklad));
             } else {

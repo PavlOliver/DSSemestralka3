@@ -2,21 +2,19 @@ package furniture;
 
 import OSPRNG.UniformContinuousRNG;
 import OSPRNG.UniformDiscreteRNG;
+import simulation.Mc;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Furnitures {
     private final Queue<Furniture> furnitureList = new LinkedList<>();
     private final int id;
     private double arrivalTime;
 
-    public Furnitures(int id, double arrivalTime) {
+    public Furnitures(int id, double arrivalTime, Random seedGenerator) {
         this.id = id;
-        UniformContinuousRNG furnitureTypeGenerator = new UniformContinuousRNG(0d, 1d);
-        for (int i = 0; i < new UniformDiscreteRNG(1, 5).sample(); i++) {
+        UniformContinuousRNG furnitureTypeGenerator = new UniformContinuousRNG(0d, 1d, seedGenerator);
+        for (int i = 0; i < new UniformDiscreteRNG(1, 5, seedGenerator).sample(); i++) {
             double randomValue = furnitureTypeGenerator.sample();
             if (randomValue < 0.5) {
                 furnitureList.add(new Furniture(i, id, FurnitureType.TABLE, arrivalTime));
@@ -52,4 +50,3 @@ public class Furnitures {
         return id;
     }
 }
-

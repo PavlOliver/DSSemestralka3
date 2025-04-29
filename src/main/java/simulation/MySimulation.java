@@ -127,7 +127,7 @@ public AgentC agentC()
     }
 
     public List<Furniture> getFurnitures() {
-        return agentA().getFurnitureList();
+        return agentVyroby().getFurnitureList();
     }
 
     public SimQueue<Furnitures> getStorage() {

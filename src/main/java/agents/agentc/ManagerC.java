@@ -2,6 +2,7 @@ package agents.agentc;
 
 import OSPABA.*;
 import OSPRNG.UniformContinuousRNG;
+import agents.agentvyroby.AgentVyroby;
 import furniture.Furniture;
 import furniture.FurnitureState;
 import simulation.*;
@@ -26,14 +27,16 @@ public class ManagerC extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="22", type="Request"
     public void processKovanie(MessageForm message) {
-
+        //tu myslim ze nemoze sa stat ze bude worker null
+        message.setCode(Mc.presun);
+        message.setAddressee(myAgent().parent());
+        request(message);
     }
 
     //meta! sender="ProcessMorenie", id="44", type="Finish"
     public void processFinishProcessMorenie(MessageForm message) {
         System.out.println("Pracovnik skoncil morenie v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED);
-
 
         UniformContinuousRNG rng = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
 
@@ -42,29 +45,7 @@ public class ManagerC extends OSPABA.Manager {
             startContinualAssistant(message);
         } else {
             System.out.println("Pracovnik C skoncil pracu Morenim");
-            ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
-
-            Worker worker = ((MyMessage) message).getWorker();
-            ((MyMessage) message).setWorker(null);
-
-            //najdem mu novu pracu
-            if (!myAgent().getQueueMorenia().isEmpty()) {
-                MyMessage newMessage = (MyMessage) message.createCopy();
-
-                newMessage.setWorker(worker);
-                Furniture furniture = myAgent().getQueueMorenia().dequeue();
-                newMessage.setFurniture(furniture);
-                newMessage.setWorkingPlace(furniture.getWorkingPlace());
-                newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
-
-                newMessage.setCode(Mc.presun);
-                newMessage.setAddressee(myAgent().parent());
-                request(newMessage);
-            } else {
-                System.out.println("Fronta je prazdna");
-                worker.setBusy(false);
-                //worker.setCurrentFurniture(null);
-            }
+            this.findNewJob((MyMessage) message);
 
             message.setCode(Mc.morenie);
             response(message);
@@ -75,17 +56,22 @@ public class ManagerC extends OSPABA.Manager {
     public void processFinishProcessLakovanie(MessageForm message) {
         System.out.println("Pracovnik C skoncil pracu Lakovanim");
         ((MyMessage) message).getFurniture().setState(FurnitureState.LACQUERED);
-        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
+        this.findNewJob((MyMessage) message);
 
-        Worker worker = ((MyMessage) message).getWorker();
-        ((MyMessage) message).setWorker(null);
+        message.setCode(Mc.morenie);
+        response(message);
+    }
+
+    private void findNewJob(MyMessage message) {
+        message.getWorkingPlace().setCurrentWorker(null);
+        Worker worker = message.getWorker();
+        message.setWorker(null);
 
         //najdem mu novu pracu
-        if (!myAgent().getQueueMorenia().isEmpty()) {
+        if (!((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
-
             newMessage.setWorker(worker);
-            Furniture furniture = myAgent().getQueueMorenia().dequeue();
+            Furniture furniture = ((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().poll();
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -94,16 +80,33 @@ public class ManagerC extends OSPABA.Manager {
             newMessage.setAddressee(myAgent().parent());
             request(newMessage);
         } else {
-            worker.setBusy(false);
-            //worker.setCurrentFurniture(null);
-        }
+            if (!myAgent().getQueueMoreniaPriority().isEmpty()) {
+                MyMessage newMessage = (MyMessage) message.createCopy();
 
-        message.setCode(Mc.morenie);
-        response(message);
+                newMessage.setWorker(worker);
+                Furniture furniture = myAgent().getQueueMoreniaPriority().poll();
+                newMessage.setFurniture(furniture);
+                newMessage.setWorkingPlace(furniture.getWorkingPlace());
+                newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
+
+                newMessage.setCode(Mc.presun);
+                newMessage.setAddressee(myAgent().parent());
+                request(newMessage);
+            } else {
+                worker.setBusy(false);
+                //worker.setCurrentFurniture(null);
+            }
+        }
     }
 
     //meta! sender="ProcessKovanie", id="48", type="Finish"
     public void processFinishProcessKovanie(MessageForm message) {
+        System.out.println("Pracovnik C skoncil kovanie");
+        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED);
+        this.findNewJob((MyMessage) message);
+
+        message.setCode(Mc.kovanie);
+        response(message);
     }
 
     //meta! sender="AgentVyroby", id="21", type="Request"
@@ -115,7 +118,8 @@ public class ManagerC extends OSPABA.Manager {
             message.setAddressee(mySim().findAgent(Id.agentVyroby));
             request(message);
         } else {
-            myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
+            //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
+            myAgent().getQueueMoreniaPriority().add(((MyMessage) message).getFurniture());
             //response(message); //nic nezrobilo ani sa robit nebude
         }
     }
@@ -130,8 +134,13 @@ public class ManagerC extends OSPABA.Manager {
     //meta! sender="AgentVyroby", id="56", type="Response"
     public void processPresun(MessageForm message) {
         System.out.println("Pracovnik je na mieste " + mySim().currentTime());
-        message.setCode(Mc.morenie);
-        message.setAddressee(myAgent().findAssistant(Id.processMorenie));
+        if (((MyMessage) message).getFurniture().getState() == FurnitureState.CUT) {
+            message.setCode(Mc.morenie);
+            message.setAddressee(myAgent().findAssistant(Id.processMorenie));
+        } else {
+            message.setCode(Mc.kovanie);
+            message.setAddressee(myAgent().findAssistant(Id.processKovanie));
+        }
         startContinualAssistant(message);
     }
 

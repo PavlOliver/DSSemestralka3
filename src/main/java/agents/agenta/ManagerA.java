@@ -1,6 +1,7 @@
 package agents.agenta;
 
 import OSPABA.*;
+import agents.agentvyroby.AgentVyroby;
 import furniture.Furniture;
 import furniture.FurnitureState;
 import furniture.Furnitures;
@@ -28,10 +29,21 @@ public class ManagerA extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="19", type="Request"
     public void processKovanie(MessageForm message) {
+        //tu myslim ze nemoze sa stat ze bude worker null
+        message.setCode(Mc.presun);
+        message.setAddressee(myAgent().parent());
+        request(message);
     }
 
     //meta! sender="ProcessKovanieA", id="38", type="Finish"
     public void processFinishProcessKovanieA(MessageForm message) {
+        System.out.println("Pracovnik A skoncil kovanie");
+        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED);
+//        this.startWorking((MyMessage) message);//asik
+        findNewJob((MyMessage) message);
+
+        message.setCode(Mc.kovanie);
+        response(message);
     }
 
     //meta! sender="ProcessPripravy", id="34", type="Finish"
@@ -47,24 +59,54 @@ public class ManagerA extends OSPABA.Manager {
     public void processFinishProcessRezania(MessageForm message) {
         System.out.println("Rezanie skoncene v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.CUT);
-        Worker worker = ((MyMessage) message).getWorker();
-        ((MyMessage) message).setWorker(null);
-        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
+
+//        Worker worker = ((MyMessage) message).getWorker();
+//        ((MyMessage) message).setWorker(null);
+//        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
+
+        //najdem mu novu pracu ale iba ak neni nic na kovanie
+//        if (!myAgent().getStorage().isEmpty() && myAgent().getWorkingPlaces().getFreeWorkingPlace() != null) {
+//            MyMessage newMessage = (MyMessage) message.createCopy();
+//            newMessage.setWorkingPlace(null);
+//            newMessage.setFurniture(null);
+//            newMessage.setWorker(worker);
+//            this.startWorking(newMessage);
+//        } else {
+//            worker.setBusy(false);
+//            //worker.setCurrentFurniture(null);
+//        }
+        this.findNewJob((MyMessage) message);
+
+        message.setCode(Mc.prijemTovaru);
+        response(message);
+    }
+
+    private void findNewJob(MyMessage message) {
+        message.getWorker().setBusy(false);
+        message.getWorkingPlace().setCurrentWorker(null);
+        Worker worker = message.getWorker();
+        message.setWorker(null);
 
         //najdem mu novu pracu
-        if (!myAgent().getStorage().isEmpty()) {
+        if (!((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().isEmpty()) {
+            MyMessage newMessage = (MyMessage) message.createCopy();
+            newMessage.setWorker(worker);
+            Furniture furniture = ((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().poll();
+            newMessage.setFurniture(furniture);
+            newMessage.setWorkingPlace(furniture.getWorkingPlace());
+            newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
+
+            newMessage.setCode(Mc.presun);
+            newMessage.setAddressee(myAgent().parent());
+            request(newMessage);
+        }
+        else {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorkingPlace(null);
             newMessage.setFurniture(null);
             newMessage.setWorker(worker);
             this.startWorking(newMessage);
-        } else {
-            worker.setBusy(false);
-            //worker.setCurrentFurniture(null);
         }
-
-        message.setCode(Mc.prijemTovaru);
-        response(message);
     }
 
     private void startWorking(MyMessage message) {
@@ -74,7 +116,8 @@ public class ManagerA extends OSPABA.Manager {
                 Furnitures order = myAgent().getStorage().peek();
                 Furniture furniture = order.getFurniture();
                 furniture.setWorkingPlace(workingPlace);
-                myAgent().addFurniture(furniture); //sledovanie nabytkov v systeme
+                //myAgent().addFurniture(furniture); //sledovanie nabytkov v systeme
+                ((AgentVyroby) myAgent().parent()).addFurniture(furniture);
                 if (order.isEmpty()) {
                     myAgent().getStorage().dequeue();
                 }
@@ -82,6 +125,7 @@ public class ManagerA extends OSPABA.Manager {
                 workingPlace.setCurrentWorker(message.getWorker());
                 message.setFurniture(furniture);
                 message.setWorkingPlace(workingPlace);
+                message.getWorker().setBusy(true);
 
                 message.setCode(Mc.presun);
                 message.setAddressee(myAgent().parent());
@@ -93,7 +137,7 @@ public class ManagerA extends OSPABA.Manager {
     //meta! sender="AgentVyroby", id="18", type="Request"
     public void processPrijemTovaru(MessageForm message) {
         System.out.println("Agent A spracovava objednavku v case:" + mySim().currentTime());
-        Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime());
+        Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
         myAgent().getStorage().enqueue(furnitures);
         if (((MyMessage) message).getWorker() != null)
             startWorking((MyMessage) message);
@@ -116,9 +160,15 @@ public class ManagerA extends OSPABA.Manager {
             message.setAddressee(myAgent().findAssistant(Id.processPripravy));
             startContinualAssistant(message);
         } else {
-            System.out.println("Pracovnik zacina rezanie v case:" + mySim().currentTime());
-            message.setAddressee(myAgent().findAssistant(Id.processRezania));
-            startContinualAssistant(message);
+            if(((MyMessage) message).getFurniture().getState() == FurnitureState.UNPACKED) {
+                System.out.println("Pracovnik zacina rezanie v case:" + mySim().currentTime());
+                message.setAddressee(myAgent().findAssistant(Id.processRezania));
+                startContinualAssistant(message);
+            } else {
+                System.out.println("Pracovnik zacina kovanie v case:" + mySim().currentTime());
+                message.setAddressee(myAgent().findAssistant(Id.processKovanieA));
+                startContinualAssistant(message);
+            }
         }
     }
 

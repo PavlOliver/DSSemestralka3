@@ -1,6 +1,8 @@
 package agents.agentmodelu;
 
 import OSPABA.*;
+import agents.agenta.AgentA;
+import agents.agentvyroby.AgentVyroby;
 import simulation.*;
 
 //meta! id="1"
@@ -20,49 +22,50 @@ public class ManagerModelu extends OSPABA.Manager {
         }
     }
 
-	//meta! sender="AgentVyroby", id="17", type="Response"
-	public void processSpracujObjednavku(MessageForm message) {
-		System.out.println("Nabytok " + ((MyMessage) message).getFurniture().getId() + " bol uplne dokonceny v case:" + mySim().currentTime());
-
+    //meta! sender="AgentVyroby", id="17", type="Response"
+    public void processSpracujObjednavku(MessageForm message) {
+        System.out.println("Nabytok " + ((MyMessage) message).getFurniture().getOrderId() + " " + ((MyMessage) message).getFurniture().getId() + " bol uplne dokonceny v case:" + mySim().currentTime());
+        //potom zmenit aby to vedelo ratat spravne ze odisla cela objednavka a podobne
+        ((AgentVyroby)mySim().findAgent(Id.agentVyroby)).getFurnitureList().remove(((MyMessage) message).getFurniture());
+        ((MyMessage) message).getFurniture().getWorkingPlace().setCurrentWorker(null);
+        ((MyMessage) message).getFurniture().getWorkingPlace().setCurrentFurniture(null);
+        //((AgentA)mySim().findAgent(Id.agentA)).
     }
 
-	//meta! sender="AgentOkolia", id="15", type="Notice"
-	public void processPrichodObjednavky(MessageForm message) {
+    //meta! sender="AgentOkolia", id="15", type="Notice"
+    public void processPrichodObjednavky(MessageForm message) {
         message.setCode(Mc.spracujObjednavku);
         message.setAddressee(mySim().findAgent(Id.agentVyroby));
         request(message);
     }
 
-	//meta! userInfo="Process messages defined in code", id="0"
-	public void processDefault(MessageForm message) {
+    //meta! userInfo="Process messages defined in code", id="0"
+    public void processDefault(MessageForm message) {
         switch (message.code()) {
         }
     }
 
-	//meta! userInfo="Generated code: do not modify", tag="begin"
-	public void init()
-	{
-	}
+    //meta! userInfo="Generated code: do not modify", tag="begin"
+    public void init() {
+    }
 
-	@Override
-	public void processMessage(MessageForm message)
-	{
-		switch (message.code())
-		{
-		case Mc.prichodObjednavky:
-			processPrichodObjednavky(message);
-		break;
+    @Override
+    public void processMessage(MessageForm message) {
+        switch (message.code()) {
+            case Mc.prichodObjednavky:
+                processPrichodObjednavky(message);
+                break;
 
-		case Mc.spracujObjednavku:
-			processSpracujObjednavku(message);
-		break;
+            case Mc.spracujObjednavku:
+                processSpracujObjednavku(message);
+                break;
 
-		default:
-			processDefault(message);
-		break;
-		}
-	}
-	//meta! tag="end"
+            default:
+                processDefault(message);
+                break;
+        }
+    }
+    //meta! tag="end"
 
     @Override
     public AgentModelu myAgent() {

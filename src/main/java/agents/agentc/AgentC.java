@@ -33,6 +33,7 @@ public class AgentC extends OSPABA.Agent {
 
         addOwnMessage(Mc.koniecMorenia);
         addOwnMessage(Mc.koniecLakovania);
+        addOwnMessage(Mc.koniecKovania);
     }
 
 	//meta! userInfo="Generated code: do not modify", tag="begin"

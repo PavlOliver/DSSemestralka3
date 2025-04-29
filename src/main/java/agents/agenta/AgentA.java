@@ -18,7 +18,6 @@ public class AgentA extends OSPABA.Agent {
     private WorkingPlaces workingPlaces;
     private SimQueue<Furnitures> storage;
     private WStat dlzkaStorageStat;
-    private List<Furniture> furnitureList; //asi to bude musiet ist do agenta vyroby uvidime
 
     public AgentA(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -32,12 +31,10 @@ public class AgentA extends OSPABA.Agent {
         dlzkaStorageStat = new WStat(mySim());
         storage = new SimQueue<>(dlzkaStorageStat);
 
-        furnitureList = new ArrayList<>();
-
-        workingPlaces = new WorkingPlaces(20);
+        workingPlaces = new WorkingPlaces(80);
         addOwnMessage(Mc.pripravaMaterialu);
         addOwnMessage(Mc.koniecRezania);
-
+        addOwnMessage(Mc.koniecKovania);
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -58,13 +55,5 @@ public class AgentA extends OSPABA.Agent {
 
     public WorkingPlaces getWorkingPlaces() {
         return workingPlaces;
-    }
-
-    public void addFurniture(Furniture furniture) {
-        furnitureList.add(furniture);
-    }
-
-    public List<Furniture> getFurnitureList() {
-        return furnitureList;
     }
 }
