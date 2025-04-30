@@ -58,4 +58,12 @@ public class Furniture implements Comparable<Furniture> {
             return cmp;
         return Integer.compare(this.id, o.id);
     }
+
+    public double getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(double arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
 }
