@@ -9,7 +9,7 @@ import worker.WorkerState;
 
 //meta! id="33"
 public class ProcessPripravy extends OSPABA.Process {
-    private final TriangularRNG preparationTimeRNG = new TriangularRNG(300d, 900d, 500d, ((MySimulation) mySim()).getSeedGenerator());
+    private final TriangularRNG preparationTimeRNG = new TriangularRNG(300d, 500d, 900d, ((MySimulation) mySim()).getSeedGenerator());
 
     public ProcessPripravy(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
@@ -25,7 +25,8 @@ public class ProcessPripravy extends OSPABA.Process {
     public void processStart(MessageForm message) {
         ((MyMessage) message).getWorker().setAction(WorkerState.PREPARING);
         message.setCode(Mc.pripravaMaterialu);
-        hold(preparationTimeRNG.sample() * 1000, message);
+        double preparationTime = preparationTimeRNG.sample() * 1000;
+        hold(preparationTime, message);
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

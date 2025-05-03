@@ -8,13 +8,15 @@ public class Furniture implements Comparable<Furniture> {
     private final FurnitureType type;
     private FurnitureState state;
     private WorkingPlace workingPlace;
+    private final double arrivalTime;
 
-    public Furniture(int id, int orderId, FurnitureType type) {
+    public Furniture(int id, int orderId, FurnitureType type, double arrivalTime) {
         this.id = id;
         this.orderId = orderId;
         this.type = type;
         this.state = FurnitureState.PACKED;
         this.workingPlace = null;
+        this.arrivalTime = arrivalTime;
     }
 
     public FurnitureState getState() {
@@ -34,7 +36,7 @@ public class Furniture implements Comparable<Furniture> {
     }
 
     public String toString() {
-        return type + "(" + state + ")";
+        return orderId + "(" + id + ") " + type + "(" + state + ")";
     }
 
     public int getOrderId() {
@@ -55,5 +57,9 @@ public class Furniture implements Comparable<Furniture> {
         if (cmp != 0)
             return cmp;
         return Integer.compare(this.id, o.id);
+    }
+
+    public double getArrivalTime() {
+        return arrivalTime;
     }
 }

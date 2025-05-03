@@ -23,15 +23,16 @@ public class PlanovacPrichodov extends OSPABA.Scheduler {
 
     //meta! sender="AgentOkolia", id="26", type="Start"
     public void processStart(MessageForm message) {
-        if(mySim().animatorExists()) {
-            AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
-
-            mySim().animator().register(animItem);
-            animItem.setPositionAlignment(AnimImageItem.PositionAlignment.CENTER);
-        }
+//        if(mySim().animatorExists()) {
+//            AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
+//
+//            mySim().animator().register(animItem);
+//            animItem.setPositionAlignment(AnimImageItem.PositionAlignment.CENTER);
+//        }
 
         message.setCode(Mc.prichodObjednavky);
         double time = arrivalGenerator.sample() * 60 * 1000;
+
         hold(time, message);
     }
 

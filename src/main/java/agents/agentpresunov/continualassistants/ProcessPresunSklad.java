@@ -12,7 +12,7 @@ import worker.WorkerState;
 
 //meta! id="28"
 public class ProcessPresunSklad extends OSPABA.Process {
-    private final TriangularRNG presunSkladRNG = new TriangularRNG(60d, 480d, 120d, ((MySimulation) mySim()).getSeedGenerator());
+    private final TriangularRNG presunSkladRNG = new TriangularRNG(60d, 120d, 480d, ((MySimulation) mySim()).getSeedGenerator());
 
     public ProcessPresunSklad(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
@@ -28,12 +28,14 @@ public class ProcessPresunSklad extends OSPABA.Process {
     public void processStart(MessageForm message) {
         ((MyMessage) message).getWorker().setAction(WorkerState.MOVING_STORAGE);
         message.setCode(Mc.presunDoSkladu);
+        double moveTime;
         if (((MyMessage) message).getWorker().getPosition() == WorkerPosition.STORAGE
                 && ((MyMessage) message).getFurniture().getState() == FurnitureState.PACKED) {
-            hold(0, message);
+            moveTime = 0;
         } else {
-            hold(presunSkladRNG.sample() * 1000, message);
+            moveTime = presunSkladRNG.sample();
         }
+        hold(moveTime, message);
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

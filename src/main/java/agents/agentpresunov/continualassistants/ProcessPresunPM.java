@@ -19,14 +19,15 @@ public class ProcessPresunPM extends OSPABA.Process {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        moveTimeBetweenWP = new TriangularRNG(120d, 500d, 150d, ((MySimulation) mySim()).getSeedGenerator());
+        moveTimeBetweenWP = new TriangularRNG(120d, 150d, 500d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentPresunov", id="31", type="Start"
     public void processStart(MessageForm message) {
         ((MyMessage) message).getWorker().setAction(WorkerState.MOVING_WP);
         message.setCode(Mc.presunWP);
-        hold(moveTimeBetweenWP.sample() * 1000, message);
+        double durationOfMove = moveTimeBetweenWP.sample() * 1000;
+        hold(durationOfMove, message);
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

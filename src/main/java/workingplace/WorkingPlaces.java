@@ -1,6 +1,8 @@
 package workingplace;
 
+import OSPStat.WStat;
 import furniture.Furniture;
+import simulation.MySimulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +10,10 @@ import java.util.List;
 public class WorkingPlaces {
     private final List<WorkingPlace> workingPlaces;
 
-    public WorkingPlaces(int size) {
+    public WorkingPlaces(int size, MySimulation mySim) {
         this.workingPlaces = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            this.workingPlaces.add(new WorkingPlace(i));
+            this.workingPlaces.add(new WorkingPlace(i, mySim));
         }
     }
 
@@ -39,5 +41,13 @@ public class WorkingPlaces {
             }
         }
         return null;
+    }
+
+    public double getAverageUtilization() {
+        double totalUtilization = 0;
+        for (WorkingPlace workingPlace : workingPlaces) {
+            totalUtilization += workingPlace.getUtilityWStat().mean();
+        }
+        return totalUtilization / workingPlaces.size();
     }
 }

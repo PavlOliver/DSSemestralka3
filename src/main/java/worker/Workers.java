@@ -1,15 +1,17 @@
 package worker;
 
+import simulation.MySimulation;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Workers {
     private final List<Worker> workers;
 
-    public Workers(int size, char type) {
+    public Workers(int size, char type, MySimulation mySim) {
         workers = new ArrayList<Worker>();
         for (int i = 0; i < size; i++) {
-            workers.add(new Worker(i, type));
+            workers.add(new Worker(i, type, mySim));
         }
     }
 
@@ -20,5 +22,17 @@ public class Workers {
             }
         }
         return null;
+    }
+
+    public double getAverageUtilization() {
+        double totalUtilization = 0;
+        for (Worker worker : workers) {
+            totalUtilization += worker.getUtilityWStat().mean();
+        }
+        return totalUtilization / workers.size();
+    }
+
+    public List<Worker> getWorkers() {
+        return workers;
     }
 }

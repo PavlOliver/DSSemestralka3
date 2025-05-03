@@ -12,9 +12,7 @@ import java.util.PriorityQueue;
 
 //meta! id="6"
 public class AgentB extends OSPABA.Agent {
-    private SimQueue<Furniture> queueSkladania;
     private PriorityQueue<Furniture> queueSkladaniaPriority;
-    private WStat dlzkaSkladaniaQueueStat;
 
     public AgentB(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -25,8 +23,6 @@ public class AgentB extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        dlzkaSkladaniaQueueStat = new WStat(mySim());
-        queueSkladania = new SimQueue<>(dlzkaSkladaniaQueueStat);
         queueSkladaniaPriority = new PriorityQueue<>();
 
         addOwnMessage(Mc.koniecSkladania);
@@ -41,10 +37,6 @@ public class AgentB extends OSPABA.Agent {
         addOwnMessage(Mc.presun);
     }
     //meta! tag="end"
-
-    public SimQueue<Furniture> getQueueSkladania() {
-		return queueSkladania;
-	}
 
     public PriorityQueue<Furniture> getQueueSkladaniaPriority() {
         return queueSkladaniaPriority;

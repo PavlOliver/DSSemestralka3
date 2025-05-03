@@ -7,6 +7,7 @@ import furniture.Furniture;
 import furniture.FurnitureState;
 import simulation.*;
 import worker.Worker;
+import worker.WorkerState;
 
 //meta! id="7"
 public class ManagerC extends OSPABA.Manager {
@@ -96,7 +97,8 @@ public class ManagerC extends OSPABA.Manager {
                 request(newMessage);
             } else {
                 worker.setBusy(false);
-                //worker.setCurrentFurniture(null);
+                worker.setCurrentFurniture(null);
+                worker.setAction(WorkerState.WAITING);
             }
         }
     }

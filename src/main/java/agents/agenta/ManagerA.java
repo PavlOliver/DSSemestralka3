@@ -8,6 +8,7 @@ import furniture.Furnitures;
 import simulation.*;
 import worker.Worker;
 import worker.WorkerPosition;
+import worker.WorkerState;
 import workingplace.WorkingPlace;
 
 //meta! id="4"
@@ -85,6 +86,8 @@ public class ManagerA extends OSPABA.Manager {
 
     private void findNewJob(MyMessage message) {
         message.getWorker().setBusy(false);
+        message.getWorker().setCurrentFurniture(null);
+        message.getWorker().setAction(WorkerState.WAITING);
         message.getWorkingPlace().setCurrentWorker(null);
         Worker worker = message.getWorker();
         message.setWorker(null);
@@ -98,6 +101,7 @@ public class ManagerA extends OSPABA.Manager {
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
             worker.setBusy(true);
+            worker.setCurrentFurniture(furniture);
 
             newMessage.setCode(Mc.presun);
             newMessage.setAddressee(myAgent().parent());
@@ -128,6 +132,7 @@ public class ManagerA extends OSPABA.Manager {
                 message.setFurniture(furniture);
                 message.setWorkingPlace(workingPlace);
                 message.getWorker().setBusy(true);
+                message.getWorker().setCurrentFurniture(furniture);
 
                 message.setCode(Mc.presun);
                 message.setAddressee(myAgent().parent());

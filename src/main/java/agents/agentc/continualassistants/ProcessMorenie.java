@@ -36,6 +36,7 @@ public class ProcessMorenie extends OSPABA.Process {
             case FurnitureType.CHAIR -> chairPicklingGenerator.sample();
             case FurnitureType.WARDROBE -> wardrobePicklingGenerator.sample();
         } * 60 * 1000;
+
         hold(durationOfPickling, message);
     }
 

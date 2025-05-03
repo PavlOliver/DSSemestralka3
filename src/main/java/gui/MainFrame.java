@@ -7,9 +7,11 @@ import OSPAnimator.AnimTextItem;
 import OSPDataStruct.SimQueue;
 import gui.furniture.FurnitureTablePanel;
 import gui.furniture.FurnituresTablePanel;
+import gui.worker.WorkersPanel;
 import gui.workingplace.WorkingPlacesPanel;
 import simulation.MySimulation;
 import simulation.TimeFunctions;
+import worker.Workers;
 import workingplace.WorkingPlaces;
 
 import javax.imageio.ImageIO;
@@ -26,6 +28,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private FurnitureTablePanel furnitureTablePanel;
     private FurnituresTablePanel storageTablePanel;
     private WorkingPlacesPanel workingPlacesPanel;
+    private WorkersPanel workersAPanel;
+    private WorkersPanel workersBPanel;
+    private WorkersPanel workersCPanel;
 
     //speed
     private double simInterval = 1000d;
@@ -60,8 +65,22 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         this.storageTablePanel = new FurnituresTablePanel(new SimQueue<>());
         centerPanel.add(storageTablePanel);
 
-        this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0));
+        this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0, simulation));
         centerPanel.add(workingPlacesPanel);
+
+        this.workersAPanel = new WorkersPanel(new Workers(0, 'A', simulation));
+        this.workersBPanel = new WorkersPanel(new Workers(0, 'B', simulation));
+        this.workersCPanel = new WorkersPanel(new Workers(0, 'C', simulation));
+
+        JPanel workersPanel = new JPanel();
+        workersPanel.setLayout(new BoxLayout(workersPanel, BoxLayout.Y_AXIS));
+        workersPanel.setBorder(BorderFactory.createTitledBorder("Workers"));
+        workersPanel.add(workersAPanel);
+        workersPanel.add(workersBPanel);
+        workersPanel.add(workersCPanel);
+
+
+        centerPanel.add(workersPanel);
     }
 
     private void init() {
@@ -211,7 +230,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.furnitureTablePanel.setFurnitureList(((MySimulation) simulation).getFurnitures());
             this.storageTablePanel.setQueue(((MySimulation) simulation).getStorage());
             this.workingPlacesPanel.setWorkingPlaces(((MySimulation) simulation).getWorkingPlaces());
-
+            this.workersAPanel.setWorkers(((MySimulation) simulation).getWorkersA());
+            this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
+            this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
         });
         //this.simulationTimeLabel.setText("Simulation time: " + Mc.toHumanTime(simulation.currentTime()));
     }

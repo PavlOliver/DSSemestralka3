@@ -12,8 +12,6 @@ import java.util.PriorityQueue;
 
 //meta! id="7"
 public class AgentC extends OSPABA.Agent {
-    private SimQueue<Furniture> queueMorenia;
-    private WStat dlzkaMorenieQueueStat;
 
     private PriorityQueue<Furniture> queueMoreniaPriority;
 
@@ -26,9 +24,6 @@ public class AgentC extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        dlzkaMorenieQueueStat = new WStat(mySim());
-        queueMorenia = new SimQueue<>(dlzkaMorenieQueueStat);
-
         queueMoreniaPriority = new PriorityQueue<>();
 
         addOwnMessage(Mc.koniecMorenia);
@@ -48,10 +43,6 @@ public class AgentC extends OSPABA.Agent {
 		addOwnMessage(Mc.presun);
 	}
 	//meta! tag="end"
-
-    public SimQueue<Furniture> getQueueMorenia() {
-		return queueMorenia;
-	}
 
     public PriorityQueue<Furniture> getQueueMoreniaPriority() {
         return queueMoreniaPriority;

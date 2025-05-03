@@ -27,7 +27,9 @@ public class ProcessKovanie extends OSPABA.Process {
     public void processStart(MessageForm message) {
         ((MyMessage) message).getWorker().setAction(WorkerState.FORGING);
         message.setCode(Mc.koniecKovania);
-        hold(forgingTimeGenerator.sample() * 60 * 1000, message);
+        double forgingTime = forgingTimeGenerator.sample() * 60 * 1000;
+
+        hold(forgingTime, message);
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

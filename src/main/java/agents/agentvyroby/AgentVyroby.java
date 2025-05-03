@@ -20,13 +20,13 @@ public class AgentVyroby extends OSPABA.Agent {
     Workers workersA;
     Workers workersC;
     Workers workersB;
-    private SimQueue<Furniture> queueKovania;
     private PriorityQueue<Furniture> queueKovaniaPriority;
-    private WStat dlzkaKovaniaQueueStat;
     private List<Furniture> furnitureList;
     private FinishedFurnitureList finishedFurnitureList;
     private Stat orderTimeInSystemStat;
-
+    private Stat tovarTimeInSystemStat;
+    private double tovarTimeInSystem;
+    private int finishedTovarCount;
 
     public AgentVyroby(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -37,10 +37,6 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-
-
-        dlzkaKovaniaQueueStat = new WStat(mySim());
-        queueKovania = new SimQueue<>(dlzkaKovaniaQueueStat);
         queueKovaniaPriority = new PriorityQueue<>();
 
         furnitureList = new ArrayList<>();
@@ -48,6 +44,9 @@ public class AgentVyroby extends OSPABA.Agent {
         finishedFurnitureList = new FinishedFurnitureList();
 
         orderTimeInSystemStat = new Stat();
+        tovarTimeInSystemStat = new Stat();
+        tovarTimeInSystem = 0;
+        finishedTovarCount = 0;
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -74,10 +73,6 @@ public class AgentVyroby extends OSPABA.Agent {
         return workersB;
     }
 
-    public SimQueue<Furniture> getQueueKovania() {
-        return queueKovania;
-    }
-
     public void addFurniture(Furniture furniture) {
         furnitureList.add(furniture);
     }
@@ -98,9 +93,30 @@ public class AgentVyroby extends OSPABA.Agent {
         return orderTimeInSystemStat;
     }
 
-    public void setSizes(int sizeA, int sizeB, int sizeC) {
-        workersA = new Workers(sizeA, 'A');
-        workersB = new Workers(sizeB, 'B');
-        workersC = new Workers(sizeC, 'C');
+    public Stat getTovarTimeInSystemStat() {
+        return tovarTimeInSystemStat;
     }
+
+    public double getTovarTimeInSystem() {
+        return tovarTimeInSystem;
+    }
+
+    public void addTovarTimeInSystem(double time) {
+        tovarTimeInSystem += time;
+    }
+
+    public int getFinishedTovarCount() {
+        return finishedTovarCount;
+    }
+
+    public void addFinishedTovarCount() {
+        finishedTovarCount++;
+    }
+
+    public void setSizes(int sizeA, int sizeB, int sizeC) {
+        workersA = new Workers(sizeA, 'A', (MySimulation) mySim());
+        workersB = new Workers(sizeB, 'B', (MySimulation) mySim());
+        workersC = new Workers(sizeC, 'C', (MySimulation) mySim());
+    }
+
 }

@@ -1,6 +1,8 @@
 package agents.agentvyroby;
 
 import OSPABA.*;
+import agents.agentb.AgentB;
+import agents.agentc.AgentC;
 import furniture.Furniture;
 import furniture.FurnitureType;
 import simulation.*;
@@ -25,6 +27,9 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     private void finishFurniture(MyMessage message) {
         double timeInSystem = myAgent().getFinishedFurnitureList().addFinishedFurniture(message.getFurniture());
+        myAgent().getTovarTimeInSystemStat().addSample(mySim().currentTime() - message.getFurniture().getArrivalTime());
+        myAgent().addTovarTimeInSystem(mySim().currentTime() - message.getFurniture().getArrivalTime());
+        myAgent().addFinishedTovarCount();
         if (timeInSystem > 0) {
             //je posledny z objednavky, cize...
 //            System.out.println("Nabytok bol v systeme :" + ((mySim().currentTime() - timeInSystem) / 60000));
@@ -50,15 +55,16 @@ public class ManagerVyroby extends OSPABA.Manager {
         Furniture furniture = ((MyMessage) message).getFurniture();
         if (furniture.getType() == FurnitureType.WARDROBE) {
 //            System.out.println("Skladanie dokoncene moze ist pracovnik A/C:" + mySim().currentTime());
-            Worker worker = myAgent().getWorkersC().getFreeWorker();
+            Worker worker = myAgent().getWorkersA().getFreeWorker();
             if (worker == null) {
-                worker = myAgent().getWorkersA().getFreeWorker();
-                message.setAddressee(mySim().findAgent(Id.agentA));
-            } else {
+                worker = myAgent().getWorkersC().getFreeWorker();
                 message.setAddressee(mySim().findAgent(Id.agentC));
+            } else {
+                message.setAddressee(mySim().findAgent(Id.agentA));
             }
             if (worker != null) {
                 worker.setBusy(true);
+                worker.setCurrentFurniture(furniture);
                 ((MyMessage) message).setWorker(worker);
                 ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
                 message.setCode(Mc.kovanie);
@@ -81,6 +87,7 @@ public class ManagerVyroby extends OSPABA.Manager {
         Worker worker = myAgent().getWorkersB().getFreeWorker();
         if (worker != null) {
             worker.setBusy(true);
+            worker.setCurrentFurniture(((MyMessage) message).getFurniture());
             ((MyMessage) message).setWorker(worker);
             ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
         }
@@ -96,6 +103,7 @@ public class ManagerVyroby extends OSPABA.Manager {
         Worker worker = myAgent().getWorkersC().getFreeWorker();
         if (worker != null) {
             worker.setBusy(true);
+            worker.setCurrentFurniture(((MyMessage) message).getFurniture());
             ((MyMessage) message).setWorker(worker);
             ((MyMessage) message).getWorkingPlace().setCurrentWorker(worker);//skuska
         }

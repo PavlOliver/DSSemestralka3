@@ -54,6 +54,6 @@ public class AgentA extends OSPABA.Agent {
     }
 
     public void setNumberOfWorkingPlaces(int number) {
-        workingPlaces = new WorkingPlaces(number);
+        workingPlaces = new WorkingPlaces(number, (MySimulation) mySim());
     }
 }

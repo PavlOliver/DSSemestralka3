@@ -5,6 +5,7 @@ import furniture.Furniture;
 import furniture.FurnitureState;
 import simulation.*;
 import worker.Worker;
+import worker.WorkerState;
 
 //meta! id="6"
 public class ManagerB extends OSPABA.Manager {
@@ -60,6 +61,8 @@ public class ManagerB extends OSPABA.Manager {
             request(newMessage);
         } else {
             worker.setBusy(false);
+            worker.setCurrentFurniture(null);
+            worker.setAction(WorkerState.WAITING);
         }
 
         message.setCode(Mc.skladanie);

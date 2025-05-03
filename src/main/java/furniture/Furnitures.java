@@ -14,14 +14,16 @@ public class Furnitures {
     public Furnitures(int id, double arrivalTime, Random seedGenerator) {
         this.id = id;
         UniformContinuousRNG furnitureTypeGenerator = new UniformContinuousRNG(0d, 1d, seedGenerator);
-        for (int i = 0; i < new UniformDiscreteRNG(1, 5, seedGenerator).sample(); i++) {
+        UniformDiscreteRNG furnitureCountGenerator = new UniformDiscreteRNG(1, 5, seedGenerator);
+        int furnitureCount = furnitureCountGenerator.sample();
+        for (int i = 0; i < furnitureCount; i++) {
             double randomValue = furnitureTypeGenerator.sample();
             if (randomValue < 0.5) {
-                furnitureList.add(new Furniture(i, id, FurnitureType.TABLE));
+                furnitureList.add(new Furniture(i, id, FurnitureType.TABLE, arrivalTime));
             } else if (randomValue < 0.65) {
-                furnitureList.add(new Furniture(i, id, FurnitureType.CHAIR));
+                furnitureList.add(new Furniture(i, id, FurnitureType.CHAIR, arrivalTime));
             } else {
-                furnitureList.add(new Furniture(i, id, FurnitureType.WARDROBE));
+                furnitureList.add(new Furniture(i, id, FurnitureType.WARDROBE, arrivalTime));
             }
         }
     }
