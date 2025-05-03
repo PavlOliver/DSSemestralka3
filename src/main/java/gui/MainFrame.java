@@ -5,6 +5,8 @@ import OSPABA.Simulation;
 import OSPAnimator.AnimImageItem;
 import OSPAnimator.AnimTextItem;
 import OSPDataStruct.SimQueue;
+import gui.furniture.FurnitureQueuePanel;
+import gui.furniture.FurnitureQueueTableModel;
 import gui.furniture.FurnitureTablePanel;
 import gui.furniture.FurnituresTablePanel;
 import gui.worker.WorkersPanel;
@@ -26,7 +28,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private MySimulation simulation;
     private FurnitureTablePanel furnitureTablePanel;
-    private FurnituresTablePanel storageTablePanel;
+    private FurnitureQueuePanel storageTablePanel;
     private WorkingPlacesPanel workingPlacesPanel;
     private WorkersPanel workersAPanel;
     private WorkersPanel workersBPanel;
@@ -62,7 +64,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         centerPanel.add(furnitureTablePanel);
         //this.add(furnitureTablePanel, BorderLayout.CENTER);
 
-        this.storageTablePanel = new FurnituresTablePanel(new SimQueue<>());
+        this.storageTablePanel = new FurnitureQueuePanel(new SimQueue<>());
         centerPanel.add(storageTablePanel);
 
         this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0, simulation));
@@ -228,7 +230,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         invokeLater(() -> {
             this.simulationTimeLabel.setText("Simulation time: " + TimeFunctions.toHumanTime(simulation.currentTime()));
             this.furnitureTablePanel.setFurnitureList(((MySimulation) simulation).getFurnitures());
-            this.storageTablePanel.setQueue(((MySimulation) simulation).getStorage());
+            this.storageTablePanel.setStorage(((MySimulation) simulation).getStorage());
             this.workingPlacesPanel.setWorkingPlaces(((MySimulation) simulation).getWorkingPlaces());
             this.workersAPanel.setWorkers(((MySimulation) simulation).getWorkersA());
             this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());

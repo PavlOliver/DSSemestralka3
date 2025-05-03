@@ -28,6 +28,18 @@ public class ManagerVyroby extends OSPABA.Manager {
     }
 
     private void finishFurniture(MyMessage message) {
+        myAgent().getFurnitureList().remove(message.getFurniture());
+        message.getFurniture().getWorkingPlace().setCurrentWorker(null);
+        message.getFurniture().getWorkingPlace().setCurrentFurniture(null);
+
+        //todo uvolnil sa stol takze moze ist A
+        if (!((AgentA)mySim().findAgent(Id.agentA)).getStorage().isEmpty()) {
+            MyMessage newMessage = (MyMessage) message.createCopy();
+            newMessage.setCode(Mc.prijemTovaru);
+            newMessage.setAddressee(mySim().findAgent(Id.agentA));
+            request(newMessage);
+        }
+
         double timeInSystem = myAgent().getFinishedFurnitureList().addFinishedFurniture(message.getFurniture());
         myAgent().getTovarTimeInSystemStat().addSample(mySim().currentTime() - message.getFurniture().getArrivalTime());
         myAgent().addTovarTimeInSystem(mySim().currentTime() - message.getFurniture().getArrivalTime());

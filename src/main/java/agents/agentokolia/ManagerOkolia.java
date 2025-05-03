@@ -38,11 +38,20 @@ public class ManagerOkolia extends OSPABA.Manager {
         switch (message.code()) {
             case Mc.prichodObjednavky:
 
+
                 Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
-                ((AgentA) mySim().findAgent(Id.agentA)).getStorage().enqueue(furnitures);
+                int size = furnitures.getSize();
+                if(furnitures.getId() == 1542){
+                    System.out.println("Objednavka 1542");
+                }
+
                 ((AgentVyroby) mySim().findAgent(Id.agentVyroby)).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
 
-                int size = furnitures.getSize();
+                while(furnitures.getSize() > 0) {
+                    ((AgentA)mySim().findAgent(Id.agentA)).getStorage().enqueue(furnitures.getFurniture());
+                }
+
+
                 for (int i = 0; i < size; i++) {
                     if (i > 0)
                         message = (MyMessage) message.createCopy();

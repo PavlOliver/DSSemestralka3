@@ -12,7 +12,7 @@ public class Worker {
     private WorkerPosition position;
     private char type;
     private WorkerState action;
-    private WStat utilityWStat;
+    private final WStat utilityWStat;
 
     public Worker(int id, char type, MySimulation mySim) {
         this.id = id;

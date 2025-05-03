@@ -3,6 +3,7 @@ package agents.agenta;
 import OSPABA.*;
 import OSPDataStruct.SimQueue;
 import OSPStat.WStat;
+import furniture.Furniture;
 import furniture.Furnitures;
 import simulation.*;
 import agents.agenta.continualassistants.*;
@@ -12,7 +13,7 @@ import workingplace.WorkingPlaces;
 //meta! id="4"
 public class AgentA extends OSPABA.Agent {
     private WorkingPlaces workingPlaces;
-    private SimQueue<Furnitures> storage;
+    private SimQueue<Furniture> storage;
     private WStat dlzkaStorageStat;
 
     public AgentA(int id, Simulation mySim, Agent parent) {
@@ -45,7 +46,7 @@ public class AgentA extends OSPABA.Agent {
     }
 
     //meta! tag="end"
-    public SimQueue<Furnitures> getStorage() {
+    public SimQueue<Furniture> getStorage() {
         return storage;
     }
 

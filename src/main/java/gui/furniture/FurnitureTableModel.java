@@ -1,5 +1,6 @@
 package gui.furniture;
 
+import OSPDataStruct.SimQueue;
 import furniture.Furniture;
 import furniture.FurnitureState;
 

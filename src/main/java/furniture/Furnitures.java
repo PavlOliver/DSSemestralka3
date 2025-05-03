@@ -63,4 +63,5 @@ public class Furnitures {
     public int getSize() {
         return furnitureList.size();
     }
+
 }

@@ -44,8 +44,8 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareReplication() {
         super.prepareReplication();
         // Reset entities, queues, local statistics, etc...
-        agentA().setNumberOfWorkingPlaces(80);
-        agentVyroby().setSizes(15, 5, 40);
+        agentA().setNumberOfWorkingPlaces(17);
+        agentVyroby().setSizes(3, 3, 14);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class MySimulation extends OSPABA.Simulation {
         return agentVyroby().getFurnitureList();
     }
 
-    public SimQueue<Furnitures> getStorage() {
+    public SimQueue<Furniture> getStorage() {
         return agentA().getStorage();
     }
 

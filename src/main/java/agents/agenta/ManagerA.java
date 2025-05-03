@@ -119,14 +119,11 @@ public class ManagerA extends OSPABA.Manager {
         if (!myAgent().getStorage().isEmpty()) {
             WorkingPlace workingPlace = myAgent().getWorkingPlaces().getFreeWorkingPlace();
             if (workingPlace != null) {
-                Furnitures order = myAgent().getStorage().peek();
-                Furniture furniture = order.getFurniture();
+                //Furnitures order = myAgent().getStorage().peek();
+                Furniture furniture = myAgent().getStorage().dequeue();
                 furniture.setWorkingPlace(workingPlace);
                 //myAgent().addFurniture(furniture); //sledovanie nabytkov v systeme
                 ((AgentVyroby) myAgent().parent()).addFurniture(furniture);
-                if (order.isEmpty()) {
-                    myAgent().getStorage().dequeue();
-                }
                 workingPlace.setCurrentFurniture(furniture);
                 workingPlace.setCurrentWorker(message.getWorker());
                 message.setFurniture(furniture);
@@ -148,12 +145,8 @@ public class ManagerA extends OSPABA.Manager {
 //        myAgent().getStorage().enqueue(furnitures);
 //        ((AgentVyroby) myAgent().parent()).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
 
-        if(myAgent().getStorage().peek().getId() == 1542) {
-            System.out.println("Objednavka 1542");
-            System.out.println("case: " + mySim().currentTime());
-        }
-        System.out.println("objednavka " + myAgent().getStorage().peek().getId() + " v case: " + mySim().currentTime());
-        System.out.println("volnych: " + ((AgentVyroby)myAgent().parent()).getWorkersA().getFreeWorkersCount());
+//        System.out.println("objednavka " + myAgent().getStorage().peek().getOrderId() + " v case: " + mySim().currentTime());
+//        System.out.println("volnych: " + ((AgentVyroby)myAgent().parent()).getWorkersA().getFreeWorkersCount());
         Worker worker = ((AgentVyroby) myAgent().parent()).getWorkersA().getFreeWorker();
 
         if (worker != null) {
