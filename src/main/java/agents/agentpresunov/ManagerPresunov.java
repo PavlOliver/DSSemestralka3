@@ -24,21 +24,21 @@ public class ManagerPresunov extends OSPABA.Manager {
 
     //meta! sender="ProcessPresunPM", id="31", type="Finish"
     public void processFinishProcessPresunPM(MessageForm message) {
-        System.out.println("Pracovnik sa presunul na PM v case:" + mySim().currentTime());
+//        System.out.println("Pracovnik sa presunul na PM v case:" + mySim().currentTime());
         message.setCode(Mc.presun);
         response(message);
     }
 
     //meta! sender="ProcessPresunSklad", id="29", type="Finish"
     public void processFinishProcessPresunSklad(MessageForm message) {
-        System.out.println("Pracovnik sa presunul do skladu v case:" + mySim().currentTime());
+//        System.out.println("Pracovnik sa presunul do skladu v case:" + mySim().currentTime());
         message.setCode(Mc.presun);
         response(message);
     }
 
     //meta! sender="AgentVyroby", id="23", type="Request"
     public void processPresun(MessageForm message) {
-        System.out.println("Agent presunov spracovava presun v case:" + mySim().currentTime());
+//        System.out.println("Agent presunov spracovava presun v case:" + mySim().currentTime());
         FurnitureState state = ((MyMessage) message).getFurniture().getState();
         if (state == FurnitureState.PACKED ||
                 state == FurnitureState.UNPACKED) {

@@ -6,6 +6,7 @@ import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.agentc.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="47"
 public class ProcessKovanie extends OSPABA.Process {
@@ -24,6 +25,7 @@ public class ProcessKovanie extends OSPABA.Process {
 
     //meta! sender="AgentC", id="48", type="Start"
     public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.FORGING);
         message.setCode(Mc.koniecKovania);
         hold(forgingTimeGenerator.sample() * 60 * 1000, message);
     }

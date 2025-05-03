@@ -5,6 +5,7 @@ import OSPRNG.TriangularRNG;
 import agents.agentpresunov.*;
 import simulation.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="30"
 public class ProcessPresunPM extends OSPABA.Process {
@@ -23,6 +24,7 @@ public class ProcessPresunPM extends OSPABA.Process {
 
     //meta! sender="AgentPresunov", id="31", type="Start"
     public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.MOVING_WP);
         message.setCode(Mc.presunWP);
         hold(moveTimeBetweenWP.sample() * 1000, message);
     }

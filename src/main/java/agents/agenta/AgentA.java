@@ -3,14 +3,10 @@ package agents.agenta;
 import OSPABA.*;
 import OSPDataStruct.SimQueue;
 import OSPStat.WStat;
-import furniture.Furniture;
 import furniture.Furnitures;
 import simulation.*;
 import agents.agenta.continualassistants.*;
 import workingplace.WorkingPlaces;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 //meta! id="4"
@@ -31,7 +27,7 @@ public class AgentA extends OSPABA.Agent {
         dlzkaStorageStat = new WStat(mySim());
         storage = new SimQueue<>(dlzkaStorageStat);
 
-        workingPlaces = new WorkingPlaces(80);
+        //workingPlaces = new WorkingPlaces(80);
         addOwnMessage(Mc.pripravaMaterialu);
         addOwnMessage(Mc.koniecRezania);
         addOwnMessage(Mc.koniecKovania);
@@ -55,5 +51,9 @@ public class AgentA extends OSPABA.Agent {
 
     public WorkingPlaces getWorkingPlaces() {
         return workingPlaces;
+    }
+
+    public void setNumberOfWorkingPlaces(int number) {
+        workingPlaces = new WorkingPlaces(number);
     }
 }

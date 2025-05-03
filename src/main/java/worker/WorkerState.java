@@ -1,0 +1,5 @@
+package worker;
+
+public enum WorkerState {
+    WAITING, MOVING_STORAGE, MOVING_WP, PREPARING, CUTTING, PICKLING, LACQUERING, BUILDING, FORGING
+}

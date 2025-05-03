@@ -19,9 +19,7 @@ class FurnituresTableModel extends AbstractTableModel {
         data.clear();
         if (queue != null) {
             // vraj sa tym viem vyhnut toArray issues ta som zvedavy
-            for (Furnitures item : queue) {
-                data.add(item);
-            }
+            data.addAll(queue);
         }
         fireTableDataChanged();
     }

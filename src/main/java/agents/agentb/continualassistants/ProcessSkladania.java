@@ -6,6 +6,7 @@ import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.agentb.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="40"
 public class ProcessSkladania extends OSPABA.Process {
@@ -29,7 +30,7 @@ public class ProcessSkladania extends OSPABA.Process {
 
     //meta! sender="AgentB", id="41", type="Start"
     public void processStart(MessageForm message) {
-        System.out.println("Skladanie zacina v case:" + mySim().currentTime());
+        ((MyMessage) message).getWorker().setAction(WorkerState.BUILDING);
         message.setCode(Mc.koniecSkladania);
         double buildingTime = switch (((MyMessage) message).getFurniture().getType()) {
             case TABLE -> tableBuildingGenerator.sample();

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkingPlacesTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"ID", "Worker", "Furniture", "Occupied"};
+    private final String[] columnNames = {"ID", "Worker", "Furniture"};
     private final List<WorkingPlace> data = new ArrayList<>();
 
     public WorkingPlacesTableModel(WorkingPlaces workingPlaces) {
@@ -47,8 +47,6 @@ public class WorkingPlacesTableModel extends AbstractTableModel {
                 return String.class;
             case 2:
                 return String.class;
-            case 3:
-                return Boolean.class;
             default:
                 return Object.class;
         }
@@ -64,8 +62,6 @@ public class WorkingPlacesTableModel extends AbstractTableModel {
                 return wp.getCurrentWorker() != null ? wp.getCurrentWorker().toString() : "";
             case 2:
                 return wp.getCurrentFurniture() != null ? wp.getCurrentFurniture().toString() : "";
-            case 3:
-                return wp.isOccupied();
             default:
                 return null;
         }

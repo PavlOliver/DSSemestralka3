@@ -17,11 +17,11 @@ public class Furnitures {
         for (int i = 0; i < new UniformDiscreteRNG(1, 5, seedGenerator).sample(); i++) {
             double randomValue = furnitureTypeGenerator.sample();
             if (randomValue < 0.5) {
-                furnitureList.add(new Furniture(i, id, FurnitureType.TABLE, arrivalTime));
+                furnitureList.add(new Furniture(i, id, FurnitureType.TABLE));
             } else if (randomValue < 0.65) {
-                furnitureList.add(new Furniture(i, id, FurnitureType.CHAIR, arrivalTime));
+                furnitureList.add(new Furniture(i, id, FurnitureType.CHAIR));
             } else {
-                furnitureList.add(new Furniture(i, id, FurnitureType.WARDROBE, arrivalTime));
+                furnitureList.add(new Furniture(i, id, FurnitureType.WARDROBE));
             }
         }
     }
@@ -48,5 +48,13 @@ public class Furnitures {
 
     public int getId() {
         return id;
+    }
+
+    public double getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(double arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 }

@@ -7,6 +7,7 @@ import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.agentc.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="45"
 public class ProcessLakovanie extends OSPABA.Process {
@@ -23,9 +24,9 @@ public class ProcessLakovanie extends OSPABA.Process {
         super.prepareReplication();
         // Setup component for the next replication
         tableLacqueringGenerator = new EmpiricRNG(((MySimulation) mySim()).getSeedGenerator(),
-                new EmpiricPair(new UniformContinuousRNG(50d, 70d), 0.1),
-                new EmpiricPair(new UniformContinuousRNG(70d, 150d), 0.6),
-                new EmpiricPair(new UniformContinuousRNG(150d, 200d), 0.3));
+                new EmpiricPair(new UniformContinuousRNG(50d, 70d, ((MySimulation) mySim()).getSeedGenerator()), 0.1),
+                new EmpiricPair(new UniformContinuousRNG(70d, 150d, ((MySimulation) mySim()).getSeedGenerator()), 0.6),
+                new EmpiricPair(new UniformContinuousRNG(150d, 200d, ((MySimulation) mySim()).getSeedGenerator()), 0.3));
 
         chairLacqueringGenerator = new UniformContinuousRNG(40d, 200d, ((MySimulation) mySim()).getSeedGenerator());
         wardrobeLacqueringGenerator = new UniformContinuousRNG(250d, 560d, ((MySimulation) mySim()).getSeedGenerator());
@@ -33,6 +34,7 @@ public class ProcessLakovanie extends OSPABA.Process {
 
     //meta! sender="AgentC", id="46", type="Start"
     public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.LACQUERING);
         message.setCode(Mc.koniecLakovania);
         double lacqueringTime = switch (((MyMessage) message).getFurniture().getType()) {
             case TABLE -> (double) tableLacqueringGenerator.sample();

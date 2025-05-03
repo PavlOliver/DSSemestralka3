@@ -24,7 +24,7 @@ public class ManagerModelu extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="17", type="Response"
     public void processSpracujObjednavku(MessageForm message) {
-        System.out.println("Nabytok " + ((MyMessage) message).getFurniture().getOrderId() + " " + ((MyMessage) message).getFurniture().getId() + " bol uplne dokonceny v case:" + mySim().currentTime());
+        //System.out.println("Nabytok " + ((MyMessage) message).getFurniture().getOrderId() + " " + ((MyMessage) message).getFurniture().getId() + " bol uplne dokonceny v case:" + mySim().currentTime());
         //potom zmenit aby to vedelo ratat spravne ze odisla cela objednavka a podobne
         ((AgentVyroby)mySim().findAgent(Id.agentVyroby)).getFurnitureList().remove(((MyMessage) message).getFurniture());
         ((MyMessage) message).getFurniture().getWorkingPlace().setCurrentWorker(null);

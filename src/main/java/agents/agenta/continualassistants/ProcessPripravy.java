@@ -5,6 +5,7 @@ import OSPRNG.TriangularRNG;
 import simulation.*;
 import agents.agenta.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="33"
 public class ProcessPripravy extends OSPABA.Process {
@@ -22,6 +23,7 @@ public class ProcessPripravy extends OSPABA.Process {
 
     //meta! sender="AgentA", id="34", type="Start"
     public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.PREPARING);
         message.setCode(Mc.pripravaMaterialu);
         hold(preparationTimeRNG.sample() * 1000, message);
     }

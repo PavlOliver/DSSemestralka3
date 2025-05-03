@@ -8,6 +8,7 @@ public class Worker {
     private Furniture currentFurniture;
     private WorkerPosition position;
     private char type;
+    private WorkerState action;
 
     public Worker(int id, char type) {
         this.id = id;
@@ -15,6 +16,7 @@ public class Worker {
         this.currentFurniture = null;
         this.position = WorkerPosition.STORAGE;
         this.type = type;
+        this.action = WorkerState.WAITING;
     }
 
     public boolean isBusy() {
@@ -43,5 +45,13 @@ public class Worker {
 
     public String toString() {
         return "Worker " + id + " (" + type + ")";
+    }
+
+    public WorkerState getAction() {
+        return action;
+    }
+
+    public void setAction(WorkerState action) {
+        this.action = action;
     }
 }

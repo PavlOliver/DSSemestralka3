@@ -1,8 +1,11 @@
 package agents.agentvyroby;
 
 import OSPABA.*;
+import OSPAnimator.AnimImageItem;
 import OSPDataStruct.SimQueue;
+import OSPStat.Stat;
 import OSPStat.WStat;
+import furniture.FinishedFurnitureList;
 import furniture.Furniture;
 import simulation.*;
 import worker.Workers;
@@ -21,6 +24,8 @@ public class AgentVyroby extends OSPABA.Agent {
     private PriorityQueue<Furniture> queueKovaniaPriority;
     private WStat dlzkaKovaniaQueueStat;
     private List<Furniture> furnitureList;
+    private FinishedFurnitureList finishedFurnitureList;
+    private Stat orderTimeInSystemStat;
 
 
     public AgentVyroby(int id, Simulation mySim, Agent parent) {
@@ -32,9 +37,7 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        workersA = new Workers(15, 'A');
-        workersC = new Workers(40, 'C');
-        workersB = new Workers(5, 'B');
+
 
         dlzkaKovaniaQueueStat = new WStat(mySim());
         queueKovania = new SimQueue<>(dlzkaKovaniaQueueStat);
@@ -42,6 +45,9 @@ public class AgentVyroby extends OSPABA.Agent {
 
         furnitureList = new ArrayList<>();
 
+        finishedFurnitureList = new FinishedFurnitureList();
+
+        orderTimeInSystemStat = new Stat();
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -82,5 +88,19 @@ public class AgentVyroby extends OSPABA.Agent {
 
     public PriorityQueue<Furniture> getQueueKovaniaPriority() {
         return queueKovaniaPriority;
+    }
+
+    public FinishedFurnitureList getFinishedFurnitureList() {
+        return finishedFurnitureList;
+    }
+
+    public Stat getOrderTimeInSystemStat() {
+        return orderTimeInSystemStat;
+    }
+
+    public void setSizes(int sizeA, int sizeB, int sizeC) {
+        workersA = new Workers(sizeA, 'A');
+        workersB = new Workers(sizeB, 'B');
+        workersC = new Workers(sizeC, 'C');
     }
 }

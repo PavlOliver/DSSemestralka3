@@ -37,7 +37,7 @@ public class ManagerB extends OSPABA.Manager {
 
     //meta! sender="ProcessSkladania", id="41", type="Finish"
     public void processFinish(MessageForm message) {
-        System.out.println("Pracovnik skoncil skladanie v case:" + mySim().currentTime());
+//        System.out.println("Pracovnik skoncil skladanie v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.BUILT);
         ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
 
@@ -74,7 +74,7 @@ public class ManagerB extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="54", type="Response"
     public void processPresun(MessageForm message) {
-        System.out.println("Pracovnik je na mieste " + mySim().currentTime());
+//        System.out.println("Pracovnik je na mieste " + mySim().currentTime());
         message.setCode(Mc.skladanie);
         message.setAddressee(myAgent().findAssistant(Id.processSkladania));
         startContinualAssistant(message);

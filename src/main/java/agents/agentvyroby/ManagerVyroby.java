@@ -23,23 +23,33 @@ public class ManagerVyroby extends OSPABA.Manager {
         }
     }
 
-    //meta! sender="AgentA", id="19", type="Response"
-    public void processKovanieAgentA(MessageForm message) {
+    private void finishFurniture(MyMessage message) {
+        double timeInSystem = myAgent().getFinishedFurnitureList().addFinishedFurniture(message.getFurniture());
+        if (timeInSystem > 0) {
+            //je posledny z objednavky, cize...
+//            System.out.println("Nabytok bol v systeme :" + ((mySim().currentTime() - timeInSystem) / 60000));
+            myAgent().getOrderTimeInSystemStat().addSample(mySim().currentTime() - timeInSystem);
+//            System.out.println("Priemerna doba v systeme:" + myAgent().getOrderTimeInSystemStat().mean() / 60000);
+        }
         message.setCode(Mc.spracujObjednavku);
         response(message);
     }
 
+    //meta! sender="AgentA", id="19", type="Response"
+    public void processKovanieAgentA(MessageForm message) {
+        this.finishFurniture((MyMessage) message);
+    }
+
     //meta! sender="AgentC", id="22", type="Response"
     public void processKovanieAgentC(MessageForm message) {
-        message.setCode(Mc.spracujObjednavku);
-        response(message);
+        this.finishFurniture((MyMessage) message);
     }
 
     //meta! sender="AgentB", id="20", type="Response"
     public void processSkladanie(MessageForm message) {
         Furniture furniture = ((MyMessage) message).getFurniture();
         if (furniture.getType() == FurnitureType.WARDROBE) {
-            System.out.println("Skladanie dokoncene moze ist pracovnik A/C:" + mySim().currentTime());
+//            System.out.println("Skladanie dokoncene moze ist pracovnik A/C:" + mySim().currentTime());
             Worker worker = myAgent().getWorkersC().getFreeWorker();
             if (worker == null) {
                 worker = myAgent().getWorkersA().getFreeWorker();
@@ -59,16 +69,15 @@ public class ManagerVyroby extends OSPABA.Manager {
             }
 
         } else {
-            System.out.println("Skladanie dokoncene uplne:" + mySim().currentTime());
+//            System.out.println("Skladanie dokoncene uplne:" + mySim().currentTime());
             ((MyMessage) message).getWorkingPlace().setCurrentWorker(null); //todo este nvm ci to nechat tu alebo dat do agentaB
-            message.setCode(Mc.spracujObjednavku); //asi treba nvm
-            response(message);
+            this.finishFurniture((MyMessage) message);
         }
     }
 
     //meta! sender="AgentC", id="21", type="Response"
     public void processMorenie(MessageForm message) {
-        System.out.println("Morenie dokoncene moze ist pracovnik B:" + mySim().currentTime());
+//        System.out.println("Morenie dokoncene moze ist pracovnik B:" + mySim().currentTime());
         Worker worker = myAgent().getWorkersB().getFreeWorker();
         if (worker != null) {
             worker.setBusy(true);
@@ -83,7 +92,7 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentA", id="18", type="Response"
     public void processPrijemTovaru(MessageForm message) {
-        System.out.println("Rezanie dokoncene moze ist pracovnik C:" + mySim().currentTime());
+//        System.out.println("Rezanie dokoncene moze ist pracovnik C:" + mySim().currentTime());
         Worker worker = myAgent().getWorkersC().getFreeWorker();
         if (worker != null) {
             worker.setBusy(true);
@@ -97,7 +106,7 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentModelu", id="17", type="Request"
     public void processSpracujObjednavku(MessageForm message) {
-        System.out.println("Agent vyroby spracovava objednavku v case:" + mySim().currentTime());
+//        System.out.println("Agent vyroby spracovava objednavku v case:" + mySim().currentTime());
         Worker worker = myAgent().getWorkersA().getFreeWorker();
         if (worker != null) {
             //worker.setBusy(true); !!!!!!!
@@ -122,21 +131,21 @@ public class ManagerVyroby extends OSPABA.Manager {
 
     //meta! sender="AgentA", id="51", type="Request"
     public void processPresunAgentA(MessageForm message) {
-        System.out.println("Agent A poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
+//        System.out.println("Agent A poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
         message.setAddressee(mySim().findAgent(Id.agentPresunov));
         request(message);
     }
 
     //meta! sender="AgentB", id="54", type="Request"
     public void processPresunAgentB(MessageForm message) {
-        System.out.println("Agent B poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
+//        System.out.println("Agent B poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
         message.setAddressee(mySim().findAgent(Id.agentPresunov));
         request(message);
     }
 
     //meta! sender="AgentC", id="56", type="Request"
     public void processPresunAgentC(MessageForm message) {
-        System.out.println("Agent C poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
+//        System.out.println("Agent C poziadal Agenta Vyroby o presun v case:" + mySim().currentTime());
         message.setAddressee(mySim().findAgent(Id.agentPresunov));
         request(message);
     }

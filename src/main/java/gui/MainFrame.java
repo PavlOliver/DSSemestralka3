@@ -2,17 +2,21 @@ package gui;
 
 import OSPABA.SimState;
 import OSPABA.Simulation;
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimTextItem;
 import OSPDataStruct.SimQueue;
 import gui.furniture.FurnitureTablePanel;
 import gui.furniture.FurnituresTablePanel;
 import gui.workingplace.WorkingPlacesPanel;
-import simulation.Mc;
 import simulation.MySimulation;
 import simulation.TimeFunctions;
 import workingplace.WorkingPlaces;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static javax.swing.SwingUtilities.invokeLater;
@@ -23,8 +27,15 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private FurnituresTablePanel storageTablePanel;
     private WorkingPlacesPanel workingPlacesPanel;
 
+    //speed
+    private double simInterval = 1000d;
+    private double simDuration = 0.001d;
+
+
     //labels
     private JLabel simulationTimeLabel;
+
+    private JPanel centerPanel;
 
     public MainFrame() {
         setTitle("Simulation");
@@ -36,15 +47,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         this.init();
 
         this.setVisible(true);
-
-
     }
 
-    private void init() {
-        this.simulationTimeLabel = new JLabel("Simulation time: 0.0");
-        this.add(simulationTimeLabel, BorderLayout.NORTH);
-
-        JPanel centerPanel = new JPanel();
+    private void initCenter(){
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         this.add(centerPanel, BorderLayout.CENTER);
 
@@ -57,13 +62,21 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
 
         this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0));
         centerPanel.add(workingPlacesPanel);
+    }
+
+    private void init() {
+        this.simulationTimeLabel = new JLabel("Simulation time: 0.0");
+        this.add(simulationTimeLabel, BorderLayout.NORTH);
+
+        centerPanel = new JPanel();
+        this.initCenter();
 
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         controlPanel.setBorder(BorderFactory.createTitledBorder("Control"));
         add(controlPanel, BorderLayout.SOUTH);
 
-        JTextField replicationCountField = new JTextField("1000");
+        JTextField replicationCountField = new JTextField("1");
         replicationCountField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(replicationCountField);
 
@@ -75,9 +88,16 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                 @Override
                 protected Void doInBackground() {
                     simulation = new MySimulation();
+                    centerPanel.removeAll();
+                    if(simulation.animatorExists()) {
+                        simulation.removeAnimator();
+                    }
+                    initCenter();
+                    centerPanel.revalidate();
+                    centerPanel.repaint();
                     simulation.registerDelegate(MainFrame.this);
-                    simulation.setSimSpeed(10000d, 0.001);
-                    simulation.simulate(Integer.parseInt(replicationCountField.getText()));
+                    simulation.setSimSpeed(simInterval, simDuration);
+                    simulation.simulate(Integer.parseInt(replicationCountField.getText()), (double) 249 * 8 * 60 * 60 * 1000);
                     return null;
                 }
 
@@ -106,11 +126,77 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             }
         });
 
+        JSlider durationSlider = new JSlider(1, 4, 1);
+        durationSlider.setMaximumSize(new Dimension(200, 100));
+        durationSlider.setMajorTickSpacing(1);
+        durationSlider.setPaintTicks(true);
+        durationSlider.setSnapToTicks(true);
+        durationSlider.setPaintLabels(true);
+        durationSlider.addChangeListener(e -> {
+            simDuration = 1 / Math.pow(10, durationSlider.getValue() - 1);
+            if (simulation != null) {
+                simulation.setSimSpeed(simInterval, simDuration);
+            }
+        });
+
+        JSlider speedSlider = new JSlider(1, 5, 1);
+        speedSlider.setMaximumSize(new Dimension(200, 100));
+        speedSlider.setMajorTickSpacing(1);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setSnapToTicks(true);
+        speedSlider.setPaintLabels(true);
+        speedSlider.addChangeListener(e -> {
+            simInterval = Math.pow(10, speedSlider.getValue() - 1) * 1000;
+            if (simulation != null) {
+                simulation.setSimSpeed(simInterval, simDuration);
+            }
+        });
+
+        JButton startAnimationButton = new JButton("Start Animation");
+        startAnimationButton.addActionListener(e -> {
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    centerPanel.removeAll();
+
+                    simulation = new MySimulation();
+                    simulation.createAnimator();
+                    AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
+                    animItem.setPosition(new Point(100, 100));
+                    simulation.animator().register(animItem);
+
+                    centerPanel.add(simulation.animator().canvas());
+                    //this.setLayout(null);
+                    simulation.animator().canvas().setBounds(0, 0, MainFrame.this.getWidth(), MainFrame.this.getHeight());
+                    simulation.animator().canvas().setVisible(true);
+                    simulation.animator().setSimSpeed(simInterval, simDuration);
+                    simulation.animator().setSynchronizedTime(true);
+//                    try {
+//                        simulation.animator().setBackgroundImage(ImageIO.read(new File("src/main/java/workerA.png")));
+//                    } catch (IOException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
+                    //centerPanel.revalidate();
+                    simulation.simulate(1);
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    startAnimationButton.setEnabled(true);
+                }
+            };
+            worker.execute();
+        });
+
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
         controlPanel.add(pauseButton);
 
+        controlPanel.add(durationSlider);
+        controlPanel.add(speedSlider);
 
+        controlPanel.add(startAnimationButton);
     }
 
     @Override

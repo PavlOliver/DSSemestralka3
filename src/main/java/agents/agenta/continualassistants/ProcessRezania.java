@@ -7,6 +7,7 @@ import OSPRNG.UniformContinuousRNG;
 import simulation.*;
 import agents.agenta.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="35"
 public class ProcessRezania extends OSPABA.Process {
@@ -18,8 +19,8 @@ public class ProcessRezania extends OSPABA.Process {
         super(id, mySim, myAgent);
         this.tableCuttingGenerator = new EmpiricRNG(
                 ((MySimulation) mySim).getSeedGenerator(),
-                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0), 0.6),
-                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0), 0.4)
+                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0, ((MySimulation) mySim()).getSeedGenerator()), 0.6),
+                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0, ((MySimulation) mySim()).getSeedGenerator()), 0.4)
         );
         this.chairCuttingGenerator = new UniformContinuousRNG(12.0, 16.0,
                 ((MySimulation) mySim).getSeedGenerator());
@@ -33,9 +34,9 @@ public class ProcessRezania extends OSPABA.Process {
         // Setup component for the next replication
     }
 
-	//meta! sender="AgentA", id="36", type="Start"
-	public void processStart(MessageForm message) {
-        System.out.println("Rezanie zacina v case:" + mySim().currentTime());
+    //meta! sender="AgentA", id="36", type="Start"
+    public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.CUTTING);
         message.setCode(Mc.koniecRezania);
         double cuttingTime = switch (((MyMessage) message).getFurniture().getType()) {
             case TABLE -> (double) tableCuttingGenerator.sample();
@@ -45,8 +46,8 @@ public class ProcessRezania extends OSPABA.Process {
         hold(cuttingTime, message);
     }
 
-	//meta! userInfo="Process messages defined in code", id="0"
-	public void processDefault(MessageForm message) {
+    //meta! userInfo="Process messages defined in code", id="0"
+    public void processDefault(MessageForm message) {
         switch (message.code()) {
             case Mc.koniecRezania -> {
                 // po skonceni rezania oznamime manazeroviA koniec rezania
@@ -56,22 +57,20 @@ public class ProcessRezania extends OSPABA.Process {
         }
     }
 
-	//meta! userInfo="Generated code: do not modify", tag="begin"
-	@Override
-	public void processMessage(MessageForm message)
-	{
-		switch (message.code())
-		{
-		case Mc.start:
-			processStart(message);
-		break;
+    //meta! userInfo="Generated code: do not modify", tag="begin"
+    @Override
+    public void processMessage(MessageForm message) {
+        switch (message.code()) {
+            case Mc.start:
+                processStart(message);
+                break;
 
-		default:
-			processDefault(message);
-		break;
-		}
-	}
-	//meta! tag="end"
+            default:
+                processDefault(message);
+                break;
+        }
+    }
+    //meta! tag="end"
 
     @Override
     public AgentA myAgent() {

@@ -6,6 +6,7 @@ import furniture.FurnitureType;
 import simulation.*;
 import agents.agentc.*;
 import OSPABA.Process;
+import worker.WorkerState;
 
 //meta! id="43"
 public class ProcessMorenie extends OSPABA.Process {
@@ -28,6 +29,7 @@ public class ProcessMorenie extends OSPABA.Process {
 
     //meta! sender="AgentC", id="44", type="Start"
     public void processStart(MessageForm message) {
+        ((MyMessage) message).getWorker().setAction(WorkerState.PICKLING);
         message.setCode(Mc.koniecMorenia);
         double durationOfPickling = switch (((MyMessage) message).getFurniture().getType()) {
             case FurnitureType.TABLE -> tablePicklingGenerator.sample();

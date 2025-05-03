@@ -1,6 +1,7 @@
 package agents.agentmodelu;
 
 import OSPABA.*;
+import OSPStat.Stat;
 import simulation.*;
 
 
