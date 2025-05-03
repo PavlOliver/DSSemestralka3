@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class MySimulation extends OSPABA.Simulation {
     private int orderId = 0;
-    private final Random seedGenerator = new Random(1234567910L);
+    private final Random seedGenerator = new Random(12345679101L);
 
     private Stat priemernaDobaObjednavkyVSystemeStat;
     private Stat priemernaDobaTovaruVSystemeStat;
@@ -44,8 +44,8 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareReplication() {
         super.prepareReplication();
         // Reset entities, queues, local statistics, etc...
-        agentA().setNumberOfWorkingPlaces(16);
-        agentVyroby().setSizes(3, 3, 16);
+        agentA().setNumberOfWorkingPlaces(80);
+        agentVyroby().setSizes(15, 5, 40);
     }
 
     @Override

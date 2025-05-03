@@ -59,4 +59,8 @@ public class Furnitures {
     public void setArrivalTime(double arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
+
+    public int getSize() {
+        return furnitureList.size();
+    }
 }

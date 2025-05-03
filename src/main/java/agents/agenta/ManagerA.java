@@ -144,14 +144,26 @@ public class ManagerA extends OSPABA.Manager {
     //meta! sender="AgentVyroby", id="18", type="Request"
     public void processPrijemTovaru(MessageForm message) {
         //System.out.println("Agent A spracovava objednavku v case:" + mySim().currentTime());
-        Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
-        myAgent().getStorage().enqueue(furnitures);
-        ((AgentVyroby) myAgent().parent()).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
-        if (((MyMessage) message).getWorker() != null)
+//        Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
+//        myAgent().getStorage().enqueue(furnitures);
+//        ((AgentVyroby) myAgent().parent()).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
+
+        if(myAgent().getStorage().peek().getId() == 1542) {
+            System.out.println("Objednavka 1542");
+            System.out.println("case: " + mySim().currentTime());
+        }
+        System.out.println("objednavka " + myAgent().getStorage().peek().getId() + " v case: " + mySim().currentTime());
+        System.out.println("volnych: " + ((AgentVyroby)myAgent().parent()).getWorkersA().getFreeWorkersCount());
+        Worker worker = ((AgentVyroby) myAgent().parent()).getWorkersA().getFreeWorker();
+
+        if (worker != null) {
+            //worker.setBusy(true); !!!!!!!
+            ((MyMessage) message).setWorker(worker);
             startWorking((MyMessage) message);
-        else {
+        } else {
             //response(message); //sam neviem co robit ked neni pracovnik
         }
+
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

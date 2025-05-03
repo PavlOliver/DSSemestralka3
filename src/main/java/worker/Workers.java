@@ -35,4 +35,14 @@ public class Workers {
     public List<Worker> getWorkers() {
         return workers;
     }
+
+    public int getFreeWorkersCount() {
+        int count = 0;
+        for (Worker worker : workers) {
+            if (!worker.isBusy()) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
