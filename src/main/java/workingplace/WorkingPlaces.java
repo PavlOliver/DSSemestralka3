@@ -14,6 +14,9 @@ public class WorkingPlaces {
         this.workingPlaces = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             this.workingPlaces.add(new WorkingPlace(i, mySim));
+            if(mySim.animatorExists()) {
+                mySim.animator().register(workingPlaces.get(i).getAnimShapeItem());
+            }
         }
     }
 

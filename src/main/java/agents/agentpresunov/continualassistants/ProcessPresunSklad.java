@@ -33,7 +33,7 @@ public class ProcessPresunSklad extends OSPABA.Process {
                 && ((MyMessage) message).getFurniture().getState() == FurnitureState.PACKED) {
             moveTime = 0;
         } else {
-            moveTime = presunSkladRNG.sample();
+            moveTime = presunSkladRNG.sample() * 1000;
         }
         hold(moveTime, message);
     }

@@ -1,6 +1,11 @@
 package furniture;
 
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimItem;
+import OSPAnimator.AnimTextItem;
 import workingplace.WorkingPlace;
+
+import java.awt.*;
 
 public class Furniture implements Comparable<Furniture> {
     private final int id;
@@ -9,6 +14,9 @@ public class Furniture implements Comparable<Furniture> {
     private FurnitureState state;
     private WorkingPlace workingPlace;
     private final double arrivalTime;
+    private double lastStepTime;
+    private final AnimImageItem animImageItem;
+
 
     public Furniture(int id, int orderId, FurnitureType type, double arrivalTime) {
         this.id = id;
@@ -17,14 +25,21 @@ public class Furniture implements Comparable<Furniture> {
         this.state = FurnitureState.PACKED;
         this.workingPlace = null;
         this.arrivalTime = arrivalTime;
+        this.lastStepTime = 0;
+        this.animImageItem = new AnimImageItem(type.getImage(), 40, 40);
+        animImageItem.setPositionAlignment(AnimImageItem.PositionAlignment.TOP_LEFT);
+        animImageItem.setToolTip("id: " + orderId + "(" + id + ")" + "\n" +
+                "type: " + type + "\n" +
+                "state: " + state);
     }
 
     public FurnitureState getState() {
         return state;
     }
 
-    public void setState(FurnitureState state) {
+    public void setState(FurnitureState state, double time) {
         this.state = state;
+        this.lastStepTime = time;
     }
 
     public FurnitureType getType() {
@@ -37,6 +52,11 @@ public class Furniture implements Comparable<Furniture> {
 
     public String toString() {
         return orderId + "(" + id + ") " + type + "(" + state + ")";
+    }
+
+    public String toTooltip() {
+        return "id: " + orderId + "(" + id + ")" + "\n" +
+                "state: " + state;
     }
 
     public int getOrderId() {
@@ -53,13 +73,22 @@ public class Furniture implements Comparable<Furniture> {
 
     @Override
     public int compareTo(Furniture o) {
-        int cmp = Integer.compare(this.orderId, o.orderId);
-        if (cmp != 0)
-            return cmp;
+        int cmp = Double.compare(this.arrivalTime, o.arrivalTime);
+        if (cmp != 0) return cmp;
+        cmp = Double.compare(this.lastStepTime, o.lastStepTime);
+        if (cmp != 0) return cmp;
         return Integer.compare(this.id, o.id);
     }
 
     public double getArrivalTime() {
         return arrivalTime;
+    }
+
+    public AnimImageItem getAnimImageItem() {
+        return animImageItem;
+    }
+
+    public void setPosition(int x, int y) {
+        animImageItem.setPosition(new Point(x, y));
     }
 }

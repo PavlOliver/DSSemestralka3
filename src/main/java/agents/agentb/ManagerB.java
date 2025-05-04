@@ -39,7 +39,7 @@ public class ManagerB extends OSPABA.Manager {
     //meta! sender="ProcessSkladania", id="41", type="Finish"
     public void processFinish(MessageForm message) {
 //        System.out.println("Pracovnik skoncil skladanie v case:" + mySim().currentTime());
-        ((MyMessage) message).getFurniture().setState(FurnitureState.BUILT);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.BUILT, mySim().currentTime());
         ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
 
         Worker worker = ((MyMessage) message).getWorker();

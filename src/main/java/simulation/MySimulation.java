@@ -1,5 +1,6 @@
 package simulation;
 
+import OSPAnimator.AnimQueue;
 import OSPDataStruct.SimQueue;
 import OSPStat.Stat;
 import agents.agentvyroby.*;
@@ -24,8 +25,14 @@ public class MySimulation extends OSPABA.Simulation {
 
     private Stat priemernaDobaObjednavkyVSystemeStat;
     private Stat priemernaDobaTovaruVSystemeStat;
+    private Stat workloadA;
+    private Stat workloadB;
+    private Stat workloadC;
 
     private Stat someProcessTimeStat;
+
+    private AnimQueue animQueue;
+
 
     public MySimulation() {
         init();
@@ -38,6 +45,12 @@ public class MySimulation extends OSPABA.Simulation {
         priemernaDobaObjednavkyVSystemeStat = new Stat();
         priemernaDobaTovaruVSystemeStat = new Stat();
         someProcessTimeStat = new Stat();
+        workloadA = new Stat();
+        workloadB = new Stat();
+        workloadC = new Stat();
+
+        this.animQueue = new AnimQueue(animator(), 100,100, 1000, 100, 0);
+        animQueue.setVisible(true);
     }
 
     @Override
@@ -54,6 +67,10 @@ public class MySimulation extends OSPABA.Simulation {
         super.replicationFinished();
         priemernaDobaObjednavkyVSystemeStat.addSample(agentVyroby().getOrderTimeInSystemStat().mean());
         priemernaDobaTovaruVSystemeStat.addSample(agentVyroby().getTovarTimeInSystemStat().mean());
+        workloadA.addSample(agentVyroby().getWorkersA().getAverageUtilization());
+        workloadB.addSample(agentVyroby().getWorkersB().getAverageUtilization());
+        workloadC.addSample(agentVyroby().getWorkersC().getAverageUtilization());
+
         System.out.println("Priemerne vytazenie A" + agentVyroby().getWorkersA().getAverageUtilization());
         System.out.println("Priemerne vytazenie B" + agentVyroby().getWorkersB().getAverageUtilization());
         System.out.println("Priemerne vytazenie C" + agentVyroby().getWorkersC().getAverageUtilization());
@@ -73,6 +90,9 @@ public class MySimulation extends OSPABA.Simulation {
         System.out.println("----------------------------------------------------------------------");
         System.out.println("Celková priemerná doba objednávky v systéme: " + (priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000));
         System.out.println("Celková priemerná doba tovaru v systéme: " + (priemernaDobaTovaruVSystemeStat.mean() / 60 / 60 / 1000));
+        System.out.println("Workload A: " + workloadA.mean());
+        System.out.println("Workload B: " + workloadB.mean());
+        System.out.println("Workload C: " + workloadC.mean());
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -191,5 +211,9 @@ public class MySimulation extends OSPABA.Simulation {
 
     public Stat getSomeProcessTimeStat() {
         return someProcessTimeStat;
+    }
+
+    public AnimQueue getAnimQueue() {
+        return animQueue;
     }
 }

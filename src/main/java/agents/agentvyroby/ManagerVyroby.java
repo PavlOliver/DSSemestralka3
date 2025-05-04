@@ -28,6 +28,10 @@ public class ManagerVyroby extends OSPABA.Manager {
     }
 
     private void finishFurniture(MyMessage message) {
+        if (mySim().animatorExists()) {
+            mySim().animator().remove(message.getFurniture().getAnimImageItem());
+        }
+
         myAgent().getFurnitureList().remove(message.getFurniture());
         message.getFurniture().getWorkingPlace().setCurrentWorker(null);
         message.getFurniture().getWorkingPlace().setCurrentFurniture(null);

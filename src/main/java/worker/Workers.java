@@ -8,10 +8,13 @@ import java.util.List;
 public class Workers {
     private final List<Worker> workers;
 
-    public Workers(int size, char type, MySimulation mySim) {
+    public Workers(int size, WorkerType type, MySimulation mySim) {
         workers = new ArrayList<Worker>();
         for (int i = 0; i < size; i++) {
             workers.add(new Worker(i, type, mySim));
+            if (mySim.animatorExists()) {
+                mySim.animator().register(workers.get(i).getAnimImageItem());
+            }
         }
     }
 

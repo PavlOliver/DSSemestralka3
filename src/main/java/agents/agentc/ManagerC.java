@@ -39,7 +39,7 @@ public class ManagerC extends OSPABA.Manager {
     //meta! sender="ProcessMorenie", id="44", type="Finish"
     public void processFinishProcessMorenie(MessageForm message) {
 //        System.out.println("Pracovnik skoncil morenie v case:" + mySim().currentTime());
-        ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED, mySim().currentTime());
 
         UniformContinuousRNG rng = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
 
@@ -58,7 +58,7 @@ public class ManagerC extends OSPABA.Manager {
     //meta! sender="ProcessLakovanie", id="46", type="Finish"
     public void processFinishProcessLakovanie(MessageForm message) {
 //        System.out.println("Pracovnik C skoncil pracu Lakovanim");
-        ((MyMessage) message).getFurniture().setState(FurnitureState.LACQUERED);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.LACQUERED, mySim().currentTime());
         this.findNewJob((MyMessage) message);
 
         message.setCode(Mc.morenie);
@@ -106,7 +106,7 @@ public class ManagerC extends OSPABA.Manager {
     //meta! sender="ProcessKovanie", id="48", type="Finish"
     public void processFinishProcessKovanie(MessageForm message) {
 //        System.out.println("Pracovnik C skoncil kovanie");
-        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED, mySim().currentTime());
         this.findNewJob((MyMessage) message);
 
         message.setCode(Mc.kovanie);

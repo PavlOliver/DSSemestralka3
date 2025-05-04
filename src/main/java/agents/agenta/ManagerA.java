@@ -1,6 +1,9 @@
 package agents.agenta;
 
 import OSPABA.*;
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimItem;
+import OSPAnimator.AnimShapeItem;
 import agents.agentvyroby.AgentVyroby;
 import furniture.Furniture;
 import furniture.FurnitureState;
@@ -10,6 +13,10 @@ import worker.Worker;
 import worker.WorkerPosition;
 import worker.WorkerState;
 import workingplace.WorkingPlace;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Point2D;
 
 //meta! id="4"
 public class ManagerA extends OSPABA.Manager {
@@ -41,7 +48,7 @@ public class ManagerA extends OSPABA.Manager {
     //meta! sender="ProcessKovanieA", id="38", type="Finish"
     public void processFinishProcessKovanieA(MessageForm message) {
         //System.out.println("Pracovnik A skoncil kovanie");
-        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED, mySim().currentTime());
 //        this.startWorking((MyMessage) message);//asik
         findNewJob((MyMessage) message);
 
@@ -52,7 +59,7 @@ public class ManagerA extends OSPABA.Manager {
     //meta! sender="ProcessPripravy", id="34", type="Finish"
     public void processFinishProcessPripravy(MessageForm message) {
         //System.out.println("Priprava materialu skoncena v case:" + mySim().currentTime());
-        ((MyMessage) message).getFurniture().setState(FurnitureState.UNPACKED);
+        ((MyMessage) message).getFurniture().setState(FurnitureState.UNPACKED, mySim().currentTime());
         message.setCode(Mc.presun);
         message.setAddressee(myAgent().parent());
         request(message);
@@ -61,23 +68,7 @@ public class ManagerA extends OSPABA.Manager {
     //meta! sender="ProcessRezania", id="36", type="Finish"
     public void processFinishProcessRezania(MessageForm message) {
         //System.out.println("Rezanie skoncene v case:" + mySim().currentTime());
-        ((MyMessage) message).getFurniture().setState(FurnitureState.CUT);
-
-//        Worker worker = ((MyMessage) message).getWorker();
-//        ((MyMessage) message).setWorker(null);
-//        ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
-
-        //najdem mu novu pracu ale iba ak neni nic na kovanie
-//        if (!myAgent().getStorage().isEmpty() && myAgent().getWorkingPlaces().getFreeWorkingPlace() != null) {
-//            MyMessage newMessage = (MyMessage) message.createCopy();
-//            newMessage.setWorkingPlace(null);
-//            newMessage.setFurniture(null);
-//            newMessage.setWorker(worker);
-//            this.startWorking(newMessage);
-//        } else {
-//            worker.setBusy(false);
-//            //worker.setCurrentFurniture(null);
-//        }
+        ((MyMessage) message).getFurniture().setState(FurnitureState.CUT, mySim().currentTime());
         this.findNewJob((MyMessage) message);
 
         message.setCode(Mc.prijemTovaru);
@@ -85,7 +76,7 @@ public class ManagerA extends OSPABA.Manager {
     }
 
     private void findNewJob(MyMessage message) {
-        message.getWorker().setBusy(false);
+        //message.getWorker().setBusy(false);
         message.getWorker().setCurrentFurniture(null);
         message.getWorker().setAction(WorkerState.WAITING);
         message.getWorkingPlace().setCurrentWorker(null);
@@ -100,7 +91,7 @@ public class ManagerA extends OSPABA.Manager {
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
-            worker.setBusy(true);
+            //worker.setBusy(true);
             worker.setCurrentFurniture(furniture);
 
             newMessage.setCode(Mc.presun);
@@ -121,6 +112,10 @@ public class ManagerA extends OSPABA.Manager {
             if (workingPlace != null) {
                 //Furnitures order = myAgent().getStorage().peek();
                 Furniture furniture = myAgent().getStorage().dequeue();
+                if (mySim().animatorExists()) {
+                    AnimItem ai = ((MySimulation) mySim()).getAnimQueue().remove(furniture.getAnimImageItem());
+                    ai.clear();
+                }
                 furniture.setWorkingPlace(workingPlace);
                 //myAgent().addFurniture(furniture); //sledovanie nabytkov v systeme
                 ((AgentVyroby) myAgent().parent()).addFurniture(furniture);
@@ -128,13 +123,20 @@ public class ManagerA extends OSPABA.Manager {
                 workingPlace.setCurrentWorker(message.getWorker());
                 message.setFurniture(furniture);
                 message.setWorkingPlace(workingPlace);
-                message.getWorker().setBusy(true);
+                if(!message.getWorker().isBusy()) {
+                    message.getWorker().setBusy(true);
+                }
                 message.getWorker().setCurrentFurniture(furniture);
 
                 message.setCode(Mc.presun);
                 message.setAddressee(myAgent().parent());
                 request(message);
+            } else {
+                message.getWorker().setBusy(false);
             }
+        } else {
+            //System.out.println("Neni co spracovavat, cakam na dalsiu objednavku v case:" + mySim().currentTime());
+            message.getWorker().setBusy(false);
         }
     }
 
@@ -175,6 +177,12 @@ public class ManagerA extends OSPABA.Manager {
         } else {
             if (((MyMessage) message).getFurniture().getState() == FurnitureState.UNPACKED) {
                 //System.out.println("Pracovnik zacina rezanie v case:" + mySim().currentTime());
+                if (mySim().animatorExists()) {
+                    Point2D p = ((MyMessage) message).getWorkingPlace().getAnimShapeItem().getPositionInTime(mySim().currentTime());
+                    ((MyMessage) message).getFurniture().getAnimImageItem().setPosition(mySim().currentTime(), p);
+
+                    //((MyMessage) message).getWorker().getAnimImageItem().setPosition(mySim().currentTime(), new Point((int) p.getX() + 50, (int) p.getY() + 50));
+                }
                 message.setAddressee(myAgent().findAssistant(Id.processRezania));
                 startContinualAssistant(message);
             } else {

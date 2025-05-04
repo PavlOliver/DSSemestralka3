@@ -13,6 +13,7 @@ import gui.worker.WorkersPanel;
 import gui.workingplace.WorkingPlacesPanel;
 import simulation.MySimulation;
 import simulation.TimeFunctions;
+import worker.WorkerType;
 import worker.Workers;
 import workingplace.WorkingPlaces;
 
@@ -70,9 +71,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0, simulation));
         centerPanel.add(workingPlacesPanel);
 
-        this.workersAPanel = new WorkersPanel(new Workers(0, 'A', simulation));
-        this.workersBPanel = new WorkersPanel(new Workers(0, 'B', simulation));
-        this.workersCPanel = new WorkersPanel(new Workers(0, 'C', simulation));
+        this.workersAPanel = new WorkersPanel(new Workers(0, WorkerType.A, simulation));
+        this.workersBPanel = new WorkersPanel(new Workers(0, WorkerType.B, simulation));
+        this.workersCPanel = new WorkersPanel(new Workers(0, WorkerType.C, simulation));
 
         JPanel workersPanel = new JPanel();
         workersPanel.setLayout(new BoxLayout(workersPanel, BoxLayout.Y_AXIS));
@@ -182,15 +183,20 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
 
                     simulation = new MySimulation();
                     simulation.createAnimator();
-                    AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
-                    animItem.setPosition(new Point(100, 100));
-                    simulation.animator().register(animItem);
+                    //AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
+                    //animItem.setPosition(new Point(100, 100));
+                    //simulation.animator().register(animItem);
+
+                    AnimTextItem simulationTimeItem = new AnimTextItem("Simulation time: 0.0");
+                    simulationTimeItem.setPosition(new Point(100, 500));
+                    simulation.animator().register(simulationTimeItem);
 
                     centerPanel.add(simulation.animator().canvas());
                     //this.setLayout(null);
                     simulation.animator().canvas().setBounds(0, 0, MainFrame.this.getWidth(), MainFrame.this.getHeight());
                     simulation.animator().canvas().setVisible(true);
-                    simulation.animator().setSimSpeed(simInterval, simDuration);
+                    //simulation.animator().setSimSpeed(1, 0.1);
+                    simulation.setSimSpeed(simInterval, simDuration);
                     simulation.animator().setSynchronizedTime(true);
 //                    try {
 //                        simulation.animator().setBackgroundImage(ImageIO.read(new File("src/main/java/workerA.png")));

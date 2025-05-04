@@ -1,20 +1,24 @@
 package worker;
 
+import OSPAnimator.AnimImageItem;
 import OSPStat.Stat;
 import OSPStat.WStat;
 import furniture.Furniture;
 import simulation.MySimulation;
+
+import java.awt.*;
 
 public class Worker {
     private final int id;
     private boolean isBusy;
     private Furniture currentFurniture;
     private WorkerPosition position;
-    private char type;
+    private final WorkerType type;
     private WorkerState action;
     private final WStat utilityWStat;
+    private final AnimImageItem animImageItem;
 
-    public Worker(int id, char type, MySimulation mySim) {
+    public Worker(int id, WorkerType type, MySimulation mySim) {
         this.id = id;
         this.isBusy = false;
         this.currentFurniture = null;
@@ -22,13 +26,16 @@ public class Worker {
         this.type = type;
         this.action = WorkerState.WAITING;
         this.utilityWStat = new WStat(mySim);
+        this.animImageItem = new AnimImageItem(type.getImagePath(), 40, 40);
+        this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, 200));
+        this.animImageItem.setToolTip(toTooltip());
     }
 
     public int getId() {
         return id;
     }
 
-    public char getType() {
+    public WorkerType getType() {
         return type;
     }
 
@@ -61,6 +68,12 @@ public class Worker {
         return "Worker " + id + " (" + type + ")";
     }
 
+    public String toTooltip() {
+        return "Worker " + id + "(" + type + "\n" +
+                "Position: " + position + "\n" +
+                "State: " + action;
+    }
+
     public WorkerState getAction() {
         return action;
     }
@@ -71,5 +84,9 @@ public class Worker {
 
     public WStat getUtilityWStat() {
         return utilityWStat;
+    }
+
+    public AnimImageItem getAnimImageItem() {
+        return animImageItem;
     }
 }

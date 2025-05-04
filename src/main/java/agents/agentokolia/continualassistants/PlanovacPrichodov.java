@@ -3,33 +3,30 @@ package agents.agentokolia.continualassistants;
 import OSPABA.*;
 import OSPAnimator.AnimImageItem;
 import OSPRNG.ExponentialRNG;
+import OSPRNG.UniformDiscreteRNG;
 import agents.agentokolia.*;
 import simulation.*;
 
+import java.awt.*;
+
 //meta! id="25"
 public class PlanovacPrichodov extends OSPABA.Scheduler {
-    private final ExponentialRNG arrivalGenerator;
+    private ExponentialRNG arrivalGenerator;
 
     public PlanovacPrichodov(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
-        this.arrivalGenerator = new ExponentialRNG(30d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     @Override
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
+        this.arrivalGenerator = new ExponentialRNG(30d, ((MySimulation) mySim()).getSeedGenerator());
+
     }
 
     //meta! sender="AgentOkolia", id="26", type="Start"
     public void processStart(MessageForm message) {
-//        if(mySim().animatorExists()) {
-//            AnimImageItem animItem = new AnimImageItem("src/main/java/workerA.png", 40, 40);
-//
-//            mySim().animator().register(animItem);
-//            animItem.setPositionAlignment(AnimImageItem.PositionAlignment.CENTER);
-//        }
-
         message.setCode(Mc.prichodObjednavky);
         double time = arrivalGenerator.sample() * 60 * 1000;
 

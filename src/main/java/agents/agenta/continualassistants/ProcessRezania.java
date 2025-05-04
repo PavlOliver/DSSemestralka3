@@ -11,27 +11,27 @@ import worker.WorkerState;
 
 //meta! id="35"
 public class ProcessRezania extends OSPABA.Process {
-    private final EmpiricRNG tableCuttingGenerator;
-    private final UniformContinuousRNG chairCuttingGenerator;
-    private final UniformContinuousRNG wardrobeCuttingGenerator;
+    private EmpiricRNG tableCuttingGenerator;
+    private UniformContinuousRNG chairCuttingGenerator;
+    private UniformContinuousRNG wardrobeCuttingGenerator;
 
     public ProcessRezania(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
-        this.tableCuttingGenerator = new EmpiricRNG(
-                ((MySimulation) mySim).getSeedGenerator(),
-                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0, ((MySimulation) mySim()).getSeedGenerator()), 0.6),
-                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0, ((MySimulation) mySim()).getSeedGenerator()), 0.4)
-        );
-        this.chairCuttingGenerator = new UniformContinuousRNG(12.0, 16.0,
-                ((MySimulation) mySim).getSeedGenerator());
-        this.wardrobeCuttingGenerator = new UniformContinuousRNG(15.0, 80.0,
-                ((MySimulation) mySim).getSeedGenerator());
     }
 
     @Override
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
+        this.tableCuttingGenerator = new EmpiricRNG(
+                ((MySimulation) mySim()).getSeedGenerator(),
+                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0, ((MySimulation) mySim()).getSeedGenerator()), 0.6),
+                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0, ((MySimulation) mySim()).getSeedGenerator()), 0.4)
+        );
+        this.chairCuttingGenerator = new UniformContinuousRNG(12.0, 16.0,
+                ((MySimulation) mySim()).getSeedGenerator());
+        this.wardrobeCuttingGenerator = new UniformContinuousRNG(15.0, 80.0,
+                ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentA", id="36", type="Start"

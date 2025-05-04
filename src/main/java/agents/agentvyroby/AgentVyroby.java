@@ -8,6 +8,7 @@ import OSPStat.WStat;
 import furniture.FinishedFurnitureList;
 import furniture.Furniture;
 import simulation.*;
+import worker.WorkerType;
 import worker.Workers;
 
 import java.util.ArrayList;
@@ -114,9 +115,9 @@ public class AgentVyroby extends OSPABA.Agent {
     }
 
     public void setSizes(int sizeA, int sizeB, int sizeC) {
-        workersA = new Workers(sizeA, 'A', (MySimulation) mySim());
-        workersB = new Workers(sizeB, 'B', (MySimulation) mySim());
-        workersC = new Workers(sizeC, 'C', (MySimulation) mySim());
+        workersA = new Workers(sizeA, WorkerType.A, (MySimulation) mySim());
+        workersB = new Workers(sizeB, WorkerType.B, (MySimulation) mySim());
+        workersC = new Workers(sizeC, WorkerType.C, (MySimulation) mySim());
     }
 
 }

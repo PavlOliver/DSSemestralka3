@@ -6,6 +6,10 @@ import agents.agentpresunov.*;
 import simulation.*;
 import OSPABA.Process;
 import worker.WorkerState;
+import workingplace.WorkingPlace;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
 
 //meta! id="30"
 public class ProcessPresunPM extends OSPABA.Process {
@@ -28,6 +32,13 @@ public class ProcessPresunPM extends OSPABA.Process {
         message.setCode(Mc.presunWP);
         double durationOfMove = moveTimeBetweenWP.sample() * 1000;
         hold(durationOfMove, message);
+
+        if (mySim().animatorExists()) {
+            Point2D wp = ((MyMessage) message).getWorkingPlace().getAnimShapeItem().getPositionInTime(mySim().currentTime());
+            ((MyMessage) message).getWorker().getAnimImageItem().moveTo(mySim().currentTime(),
+                    durationOfMove,
+                    new Point((int) (wp.getX() + 50), (int) (wp.getY() + 50)));
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

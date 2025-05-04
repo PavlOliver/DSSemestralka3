@@ -1,10 +1,16 @@
 package agents.agentokolia;
 
 import OSPABA.*;
+import OSPAnimator.AnimImageItem;
+import OSPAnimator.AnimQueue;
+import OSPRNG.UniformDiscreteRNG;
 import agents.agenta.AgentA;
 import agents.agentvyroby.AgentVyroby;
+import furniture.Furniture;
 import furniture.Furnitures;
 import simulation.*;
+
+import java.awt.*;
 
 //meta! id="2"
 public class ManagerOkolia extends OSPABA.Manager {
@@ -21,6 +27,8 @@ public class ManagerOkolia extends OSPABA.Manager {
         if (petriNet() != null) {
             petriNet().clear();
         }
+
+        //mySim().animator().register(animQueue);
     }
 
     //meta! sender="PlanovacPrichodov", id="26", type="Finish"
@@ -31,30 +39,28 @@ public class ManagerOkolia extends OSPABA.Manager {
     public void processInicializacia(MessageForm message) {
         message.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
         startContinualAssistant(message);
+
+
     }
 
     //meta! userInfo="Process messages defined in code", id="0"
     public void processDefault(MessageForm message) {
         switch (message.code()) {
             case Mc.prichodObjednavky:
-
-
                 Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
-                int size = furnitures.getSize();
-                if(furnitures.getId() == 1542){
-                    System.out.println("Objednavka 1542");
-                }
 
                 ((AgentVyroby) mySim().findAgent(Id.agentVyroby)).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
 
-                while(furnitures.getSize() > 0) {
-                    ((AgentA)mySim().findAgent(Id.agentA)).getStorage().enqueue(furnitures.getFurniture());
-                }
+                for (Furniture f : furnitures.getAllFurnituresInOrder()) {
+                    ((AgentA) mySim().findAgent(Id.agentA)).getStorage().enqueue(f);
+                    if (f.getId() > 0)
+                        message = message.createCopy();
 
-
-                for (int i = 0; i < size; i++) {
-                    if (i > 0)
-                        message = (MyMessage) message.createCopy();
+                    if (mySim().animatorExists()) {
+                        //mySim().pauseSimulation()
+                        mySim().animator().register(f.getAnimImageItem());
+                        ((MySimulation) mySim()).getAnimQueue().insert(f.getAnimImageItem());
+                    }
 
                     message.setAddressee(myAgent().parent());
                     notice(message);
