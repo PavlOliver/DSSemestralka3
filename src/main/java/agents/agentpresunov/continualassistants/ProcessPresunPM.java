@@ -34,6 +34,7 @@ public class ProcessPresunPM extends OSPABA.Process {
         hold(durationOfMove, message);
 
         if (mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
             Point2D wp = ((MyMessage) message).getWorkingPlace().getAnimShapeItem().getPositionInTime(mySim().currentTime());
             ((MyMessage) message).getWorker().getAnimImageItem().moveTo(mySim().currentTime(),
                     durationOfMove,

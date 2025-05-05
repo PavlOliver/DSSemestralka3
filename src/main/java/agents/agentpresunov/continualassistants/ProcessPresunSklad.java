@@ -10,6 +10,9 @@ import OSPABA.Process;
 import worker.WorkerPosition;
 import worker.WorkerState;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
+
 //meta! id="28"
 public class ProcessPresunSklad extends OSPABA.Process {
     private final TriangularRNG presunSkladRNG = new TriangularRNG(60d, 120d, 480d, ((MySimulation) mySim()).getSeedGenerator());
@@ -36,6 +39,22 @@ public class ProcessPresunSklad extends OSPABA.Process {
             moveTime = presunSkladRNG.sample() * 1000;
         }
         hold(moveTime, message);
+
+        if (mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            if (moveTime > 0) {
+                if (((MyMessage) message).getWorker().getPosition() == WorkerPosition.STORAGE) {
+                    Point2D wp = ((MyMessage) message).getWorkingPlace().getAnimShapeItem().getPositionInTime(mySim().currentTime());
+                    ((MyMessage) message).getWorker().getAnimImageItem().moveTo(mySim().currentTime(),
+                            moveTime,
+                            new Point((int) (wp.getX() + 50), (int) (wp.getY() + 50)));
+                } else {
+                    ((MyMessage) message).getWorker().getAnimImageItem().moveTo(mySim().currentTime(),
+                            moveTime,
+                            new Point((int) (1300 + 50), (int) (200 + 50)));
+                }
+            }
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

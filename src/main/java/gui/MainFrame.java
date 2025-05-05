@@ -82,7 +82,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         workersPanel.add(workersBPanel);
         workersPanel.add(workersCPanel);
 
-
         centerPanel.add(workersPanel);
     }
 

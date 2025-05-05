@@ -16,6 +16,7 @@ public class WorkingPlaces {
             this.workingPlaces.add(new WorkingPlace(i, mySim));
             if(mySim.animatorExists()) {
                 mySim.animator().register(workingPlaces.get(i).getAnimShapeItem());
+                mySim.animator().register(workingPlaces.get(i).getAnimTextItem());
             }
         }
     }

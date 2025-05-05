@@ -18,9 +18,9 @@ public class Furnitures {
         int furnitureCount = furnitureCountGenerator.sample();
         for (int i = 0; i < furnitureCount; i++) {
             double randomValue = furnitureTypeGenerator.sample();
-            if (randomValue < 0.5) {
+            if (randomValue <= 0.5) {
                 furnitureList.add(new Furniture(i, id, FurnitureType.TABLE, arrivalTime));
-            } else if (randomValue < 0.65) {
+            } else if (randomValue <= 0.65) {
                 furnitureList.add(new Furniture(i, id, FurnitureType.CHAIR, arrivalTime));
             } else {
                 furnitureList.add(new Furniture(i, id, FurnitureType.WARDROBE, arrivalTime));

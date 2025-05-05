@@ -50,8 +50,8 @@ public class ManagerB extends OSPABA.Manager {
             MyMessage newMessage = (MyMessage) message.createCopy();
 
             newMessage.setWorker(worker);
-            //Furniture furniture = myAgent().getQueueSkladania().dequeue();
             Furniture furniture = myAgent().getQueueSkladaniaPriority().poll();
+            worker.setCurrentFurniture(furniture);
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -62,7 +62,6 @@ public class ManagerB extends OSPABA.Manager {
         } else {
             worker.setBusy(false);
             worker.setCurrentFurniture(null);
-            worker.setAction(WorkerState.WAITING);
         }
 
         message.setCode(Mc.skladanie);

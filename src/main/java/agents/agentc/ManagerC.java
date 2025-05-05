@@ -11,6 +11,8 @@ import worker.WorkerState;
 
 //meta! id="7"
 public class ManagerC extends OSPABA.Manager {
+    private UniformContinuousRNG lacqueringRNG;
+
     public ManagerC(int id, Simulation mySim, Agent myAgent) {
         super(id, mySim, myAgent);
         init();
@@ -24,6 +26,7 @@ public class ManagerC extends OSPABA.Manager {
         if (petriNet() != null) {
             petriNet().clear();
         }
+        this.lacqueringRNG = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentVyroby", id="22", type="Request"
@@ -40,10 +43,9 @@ public class ManagerC extends OSPABA.Manager {
     public void processFinishProcessMorenie(MessageForm message) {
 //        System.out.println("Pracovnik skoncil morenie v case:" + mySim().currentTime());
         ((MyMessage) message).getFurniture().setState(FurnitureState.PICKLED, mySim().currentTime());
+        double rngSample = lacqueringRNG.sample();
 
-        UniformContinuousRNG rng = new UniformContinuousRNG(0d, 1d, ((MySimulation) mySim()).getSeedGenerator());
-
-        if (rng.sample() <= 0.15) { //rng.sample()
+        if (rngSample <= 0.15) { //rng.sample()
             message.setAddressee(myAgent().findAssistant(Id.processLakovanie));
             startContinualAssistant(message);
         } else {
@@ -78,6 +80,7 @@ public class ManagerC extends OSPABA.Manager {
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
+            worker.setCurrentFurniture(furniture);
 
             newMessage.setCode(Mc.presun);
             newMessage.setAddressee(myAgent().parent());
@@ -91,6 +94,7 @@ public class ManagerC extends OSPABA.Manager {
                 newMessage.setFurniture(furniture);
                 newMessage.setWorkingPlace(furniture.getWorkingPlace());
                 newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
+                worker.setCurrentFurniture(furniture);
 
                 newMessage.setCode(Mc.presun);
                 newMessage.setAddressee(myAgent().parent());
@@ -98,7 +102,6 @@ public class ManagerC extends OSPABA.Manager {
             } else {
                 worker.setBusy(false);
                 worker.setCurrentFurniture(null);
-                worker.setAction(WorkerState.WAITING);
             }
         }
     }

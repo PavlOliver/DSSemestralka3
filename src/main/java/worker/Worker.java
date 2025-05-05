@@ -27,7 +27,7 @@ public class Worker {
         this.action = WorkerState.WAITING;
         this.utilityWStat = new WStat(mySim);
         this.animImageItem = new AnimImageItem(type.getImagePath(), 40, 40);
-        this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, 200));
+        this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, type.getValue() * 50 + 200));
         this.animImageItem.setToolTip(toTooltip());
     }
 
@@ -46,6 +46,10 @@ public class Worker {
     public void setBusy(boolean busy) {
         isBusy = busy;
         utilityWStat.addSample(busy ? 1 : 0);
+        if(!this.isBusy) {
+            this.action = WorkerState.WAITING;
+        }
+        this.updateTooltip();
     }
 
     public Furniture getCurrentFurniture() {
@@ -80,6 +84,14 @@ public class Worker {
 
     public void setAction(WorkerState action) {
         this.action = action;
+        if(action == WorkerState.WAITING) {
+            this.animImageItem.setVisible(false);
+            this.animImageItem.setZIndex(-1);
+        } else {
+            this.animImageItem.setVisible(true);
+            this.animImageItem.setZIndex(1);
+        }
+        this.updateTooltip();
     }
 
     public WStat getUtilityWStat() {
@@ -88,5 +100,9 @@ public class Worker {
 
     public AnimImageItem getAnimImageItem() {
         return animImageItem;
+    }
+
+    public void updateTooltip() {
+        this.animImageItem.setToolTip(toTooltip());
     }
 }

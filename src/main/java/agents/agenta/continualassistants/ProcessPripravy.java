@@ -9,7 +9,7 @@ import worker.WorkerState;
 
 //meta! id="33"
 public class ProcessPripravy extends OSPABA.Process {
-    private final TriangularRNG preparationTimeRNG = new TriangularRNG(300d, 500d, 900d, ((MySimulation) mySim()).getSeedGenerator());
+    private TriangularRNG preparationTimeRNG;
 
     public ProcessPripravy(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
@@ -19,6 +19,7 @@ public class ProcessPripravy extends OSPABA.Process {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
+        this.preparationTimeRNG =  new TriangularRNG(300d, 500d, 900d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentA", id="34", type="Start"

@@ -30,6 +30,11 @@ public class ProcessKovanie extends OSPABA.Process {
         double forgingTime = forgingTimeGenerator.sample() * 60 * 1000;
 
         hold(forgingTime, message);
+
+        if(mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            ((MyMessage) message).getWorkingPlace().update();
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

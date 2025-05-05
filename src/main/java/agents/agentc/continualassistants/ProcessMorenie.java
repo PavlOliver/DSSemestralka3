@@ -38,6 +38,11 @@ public class ProcessMorenie extends OSPABA.Process {
         } * 60 * 1000;
 
         hold(durationOfPickling, message);
+
+        if(mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            ((MyMessage) message).getWorkingPlace().update();
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"
@@ -46,6 +51,7 @@ public class ProcessMorenie extends OSPABA.Process {
             case Mc.koniecMorenia -> {
                 message.setAddressee(myAgent());
                 assistantFinished(message);
+
             }
         }
     }

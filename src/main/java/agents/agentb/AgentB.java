@@ -26,7 +26,6 @@ public class AgentB extends OSPABA.Agent {
         queueSkladaniaPriority = new PriorityQueue<>();
 
         addOwnMessage(Mc.koniecSkladania);
-
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"

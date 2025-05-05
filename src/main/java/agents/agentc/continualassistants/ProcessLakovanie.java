@@ -42,6 +42,11 @@ public class ProcessLakovanie extends OSPABA.Process {
             case WARDROBE -> wardrobeLacqueringGenerator.sample();
         } * 60 * 1000;
         hold(lacqueringTime, message);
+
+        if(mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            ((MyMessage) message).getWorkingPlace().update();
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

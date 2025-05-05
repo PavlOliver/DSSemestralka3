@@ -39,8 +39,6 @@ public class ManagerOkolia extends OSPABA.Manager {
     public void processInicializacia(MessageForm message) {
         message.setAddressee(myAgent().findAssistant(Id.planovacPrichodov));
         startContinualAssistant(message);
-
-
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

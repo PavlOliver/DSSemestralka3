@@ -44,6 +44,11 @@ public class ProcessRezania extends OSPABA.Process {
             case WARDROBE -> wardrobeCuttingGenerator.sample();
         } * 60 * 1000;
         hold(cuttingTime, message);
+
+        if(mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            ((MyMessage) message).getWorkingPlace().update();
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

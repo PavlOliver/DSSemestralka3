@@ -1,6 +1,9 @@
 package simulation;
 
+import OSPAnimator.AnimImageItem;
 import OSPAnimator.AnimQueue;
+import OSPAnimator.AnimShape;
+import OSPAnimator.AnimShapeItem;
 import OSPDataStruct.SimQueue;
 import OSPStat.Stat;
 import agents.agentvyroby.*;
@@ -15,13 +18,14 @@ import furniture.Furnitures;
 import worker.Workers;
 import workingplace.WorkingPlaces;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
 
 public class MySimulation extends OSPABA.Simulation {
     private int orderId = 0;
-    private final Random seedGenerator = new Random(12345679101L);
+    private final Random seedGenerator = new Random(123456791012L);
 
     private Stat priemernaDobaObjednavkyVSystemeStat;
     private Stat priemernaDobaTovaruVSystemeStat;
@@ -49,16 +53,26 @@ public class MySimulation extends OSPABA.Simulation {
         workloadB = new Stat();
         workloadC = new Stat();
 
-        this.animQueue = new AnimQueue(animator(), 100,100, 1000, 100, 0);
-        animQueue.setVisible(true);
+        if(this.animatorExists()) {
+            AnimImageItem storageItem = new AnimImageItem(Data.storageImg, 400, 1000);
+            storageItem.setPosition(new Point(1300, 0));
+            animator().register(storageItem);
+
+            this.animQueue = new AnimQueue(animator(), 1000, 20, 0, 20, 0);
+            AnimShapeItem queueItem = new AnimShapeItem(AnimShape.RECTANGLE, 1050, Data.FURNITURE_SIZE);
+            queueItem.setPosition(new Point(0, 20));
+            queueItem.setColor(Color.LIGHT_GRAY);
+            animator().register(queueItem);
+            //animQueue.setVisible(true);
+        }
     }
 
     @Override
     public void prepareReplication() {
         super.prepareReplication();
         // Reset entities, queues, local statistics, etc...
-        agentA().setNumberOfWorkingPlaces(17);
-        agentVyroby().setSizes(3, 3, 14);
+        agentA().setNumberOfWorkingPlaces(15);
+        agentVyroby().setSizes(3, 3, 15);
     }
 
     @Override

@@ -78,7 +78,6 @@ public class ManagerA extends OSPABA.Manager {
     private void findNewJob(MyMessage message) {
         //message.getWorker().setBusy(false);
         message.getWorker().setCurrentFurniture(null);
-        message.getWorker().setAction(WorkerState.WAITING);
         message.getWorkingPlace().setCurrentWorker(null);
         Worker worker = message.getWorker();
         message.setWorker(null);
@@ -178,6 +177,7 @@ public class ManagerA extends OSPABA.Manager {
             if (((MyMessage) message).getFurniture().getState() == FurnitureState.UNPACKED) {
                 //System.out.println("Pracovnik zacina rezanie v case:" + mySim().currentTime());
                 if (mySim().animatorExists()) {
+                    ((MyMessage) message).getWorker().updateTooltip();
                     Point2D p = ((MyMessage) message).getWorkingPlace().getAnimShapeItem().getPositionInTime(mySim().currentTime());
                     ((MyMessage) message).getFurniture().getAnimImageItem().setPosition(mySim().currentTime(), p);
 

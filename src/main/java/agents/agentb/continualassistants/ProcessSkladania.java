@@ -10,22 +10,21 @@ import worker.WorkerState;
 
 //meta! id="40"
 public class ProcessSkladania extends OSPABA.Process {
-    private final UniformContinuousRNG tableBuildingGenerator;
-    private final UniformContinuousRNG chairBuildingGenerator;
-    private final UniformContinuousRNG wardrobeBuildingGenerator;
+    private UniformContinuousRNG tableBuildingGenerator;
+    private UniformContinuousRNG chairBuildingGenerator;
+    private UniformContinuousRNG wardrobeBuildingGenerator;
 
     public ProcessSkladania(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
-        tableBuildingGenerator = new UniformContinuousRNG(30d, 60d, ((MySimulation) mySim()).getSeedGenerator());
-        chairBuildingGenerator = new UniformContinuousRNG(14d, 24d, ((MySimulation) mySim()).getSeedGenerator());
-        wardrobeBuildingGenerator = new UniformContinuousRNG(35d, 75d, ((MySimulation) mySim()).getSeedGenerator());
-
     }
 
     @Override
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
+        tableBuildingGenerator = new UniformContinuousRNG(30d, 60d, ((MySimulation) mySim()).getSeedGenerator());
+        chairBuildingGenerator = new UniformContinuousRNG(14d, 24d, ((MySimulation) mySim()).getSeedGenerator());
+        wardrobeBuildingGenerator = new UniformContinuousRNG(35d, 75d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentB", id="41", type="Start"
@@ -38,6 +37,11 @@ public class ProcessSkladania extends OSPABA.Process {
             case WARDROBE -> wardrobeBuildingGenerator.sample();
         } * 60 * 1000;
         hold(buildingTime, message);
+
+        if(mySim().animatorExists()) {
+            ((MyMessage) message).getWorker().updateTooltip();
+            ((MyMessage) message).getWorkingPlace().update();
+        }
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

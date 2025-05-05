@@ -40,6 +40,10 @@ public class Furniture implements Comparable<Furniture> {
     public void setState(FurnitureState state, double time) {
         this.state = state;
         this.lastStepTime = time;
+        animImageItem.setToolTip("id: " + orderId + "(" + id + ")" + "\n" +
+                "type: " + type + "\n" +
+                "state: " + state);
+
     }
 
     public FurnitureType getType() {
