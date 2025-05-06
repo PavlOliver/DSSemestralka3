@@ -15,6 +15,7 @@ import agents.agenta.*;
 import agents.agentc.*;
 import furniture.Furniture;
 import furniture.Furnitures;
+import worker.Worker;
 import worker.Workers;
 import workingplace.WorkingPlaces;
 
@@ -24,8 +25,8 @@ import java.util.Random;
 
 
 public class MySimulation extends OSPABA.Simulation {
-    private int orderId = 0;
-    private final Random seedGenerator = new Random(123456791012L);
+    private int orderId;
+    private Random seedGenerator;
 
     private Stat priemernaDobaObjednavkyVSystemeStat;
     private Stat priemernaDobaTovaruVSystemeStat;
@@ -33,9 +34,13 @@ public class MySimulation extends OSPABA.Simulation {
     private Stat workloadB;
     private Stat workloadC;
 
+    private Stat unstartedOrdersStat;
+
     private Stat someProcessTimeStat;
 
     private AnimQueue animQueue;
+
+    private double averageOrderTime;
 
 
     public MySimulation() {
@@ -46,14 +51,21 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareSimulation() {
         super.prepareSimulation();
         // Create global statistcis
+        this.seedGenerator = new Random(1234567910L); // 1234567987L
+
         priemernaDobaObjednavkyVSystemeStat = new Stat();
         priemernaDobaTovaruVSystemeStat = new Stat();
         someProcessTimeStat = new Stat();
         workloadA = new Stat();
         workloadB = new Stat();
         workloadC = new Stat();
+        unstartedOrdersStat = new Stat();
 
-        if(this.animatorExists()) {
+        this.startAnimation();
+    }
+
+    public void startAnimation() {
+        if (this.animatorExists()) {
             AnimImageItem storageItem = new AnimImageItem(Data.storageImg, 400, 1000);
             storageItem.setPosition(new Point(1300, 0));
             animator().register(storageItem);
@@ -63,7 +75,20 @@ public class MySimulation extends OSPABA.Simulation {
             queueItem.setPosition(new Point(0, 20));
             queueItem.setColor(Color.LIGHT_GRAY);
             animator().register(queueItem);
-            //animQueue.setVisible(true);
+            for (Furniture f : _agentA.getStorage()) {
+                f.loadAnimItems(this);
+                animQueue.insert(f.getAnimImageItem());
+            }
+            animQueue.setVisible(true);
+
+            for (Furniture f : _agentVyroby.getFurnitureList()) {
+                f.loadAnimItems(this);
+            }
+
+            getWorkingPlaces().loadAnimItems(this);
+            getWorkersA().loadAnimItems(this);
+            getWorkersB().loadAnimItems(this);
+            getWorkersC().loadAnimItems(this);
         }
     }
 
@@ -71,12 +96,24 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareReplication() {
         super.prepareReplication();
         // Reset entities, queues, local statistics, etc...
-        agentA().setNumberOfWorkingPlaces(15);
-        agentVyroby().setSizes(3, 3, 15);
+        agentA().setNumberOfWorkingPlaces(10);
+        agentVyroby().setSizes(3, 1, 5);
+        averageOrderTime = 0;
+
+        this.orderId = 0;
     }
 
     @Override
     public void replicationFinished() {
+        for (Worker w : this.getWorkersC().getWorkers()) {
+            w.getUtilityWStat().updateAfterReplication();
+        }
+        for (Worker w : this.getWorkersB().getWorkers()) {
+            w.getUtilityWStat().updateAfterReplication();
+        }
+        for (Worker w : this.getWorkersA().getWorkers()) {
+            w.getUtilityWStat().updateAfterReplication();
+        }
         // Collect local statistics into global, update UI, etc...
         super.replicationFinished();
         priemernaDobaObjednavkyVSystemeStat.addSample(agentVyroby().getOrderTimeInSystemStat().mean());
@@ -84,17 +121,22 @@ public class MySimulation extends OSPABA.Simulation {
         workloadA.addSample(agentVyroby().getWorkersA().getAverageUtilization());
         workloadB.addSample(agentVyroby().getWorkersB().getAverageUtilization());
         workloadC.addSample(agentVyroby().getWorkersC().getAverageUtilization());
-
+        unstartedOrdersStat.addSample(agentVyroby().getFinishedFurnitureList().getUnstartedFurnituresCount());
+        averageOrderTime += agentVyroby().getOrderTimeInSystem() / agentVyroby().getFinishedOrderCount();
         System.out.println("Priemerne vytazenie A" + agentVyroby().getWorkersA().getAverageUtilization());
         System.out.println("Priemerne vytazenie B" + agentVyroby().getWorkersB().getAverageUtilization());
         System.out.println("Priemerne vytazenie C" + agentVyroby().getWorkersC().getAverageUtilization());
         System.out.println("Priemerne vytazenie pracoviska" + agentA().getWorkingPlaces().getAverageUtilization());
 
+        System.out.println("Celkovy pocet nedokoncenych objednávok: " + unstartedOrdersStat.mean());
+
 
         System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba objednávky v systéme: " + (priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000));
         System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba tovaru v systéme: " + (priemernaDobaTovaruVSystemeStat.mean() / 60 / 60 / 1000));
-        System.out.println("xx:" + (agentVyroby().getTovarTimeInSystem() / 60 / 60 / 1000 / agentVyroby().getFinishedTovarCount()));
-        System.out.println("Some statistic: " + someProcessTimeStat.mean());
+
+        System.out.println("Priemerna doba objednavky v systeme: " + (averageOrderTime / 60 / 60 / 1000));
+        //System.out.println("xx:" + (agentVyroby().getTovarTimeInSystem() / 60 / 60 / 1000 / agentVyroby().getFinishedTovarCount()));
+        //System.out.println("Some statistic: " + someProcessTimeStat.mean());
     }
 
     @Override
@@ -104,6 +146,8 @@ public class MySimulation extends OSPABA.Simulation {
         System.out.println("----------------------------------------------------------------------");
         System.out.println("Celková priemerná doba objednávky v systéme: " + (priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000));
         System.out.println("Celková priemerná doba tovaru v systéme: " + (priemernaDobaTovaruVSystemeStat.mean() / 60 / 60 / 1000));
+        System.out.println("Celkový počet nedokoncenych objednávok: " + unstartedOrdersStat.mean());
+
         System.out.println("Workload A: " + workloadA.mean());
         System.out.println("Workload B: " + workloadB.mean());
         System.out.println("Workload C: " + workloadC.mean());

@@ -5,12 +5,14 @@ public class FinishedFurnitures {
     private final int originalSize;
     private int currentSize;
     private final double arrivalTime;
+    private boolean started;
 
     public FinishedFurnitures(int orderId, int originalSize, double arrivalTime) {
         this.orderId = orderId;
         this.originalSize = originalSize;
         this.arrivalTime = arrivalTime;
         this.currentSize = 0;
+        this.started = false;
     }
 
     public void incCurrentSize() {
@@ -27,5 +29,13 @@ public class FinishedFurnitures {
 
     public double getArrivalTime() {
         return arrivalTime;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
     }
 }

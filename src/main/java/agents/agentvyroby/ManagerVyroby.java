@@ -9,6 +9,7 @@ import furniture.FurnitureType;
 import furniture.Furnitures;
 import simulation.*;
 import worker.Worker;
+import workingplace.WorkingPlace;
 
 //meta! id="3"
 public class ManagerVyroby extends OSPABA.Manager {
@@ -37,14 +38,6 @@ public class ManagerVyroby extends OSPABA.Manager {
         message.getFurniture().getWorkingPlace().setCurrentWorker(null);
         message.getFurniture().getWorkingPlace().setCurrentFurniture(null);
 
-        //todo uvolnil sa stol takze moze ist A
-        if (!((AgentA)mySim().findAgent(Id.agentA)).getStorage().isEmpty()) {
-            MyMessage newMessage = (MyMessage) message.createCopy();
-            newMessage.setCode(Mc.prijemTovaru);
-            newMessage.setAddressee(mySim().findAgent(Id.agentA));
-            request(newMessage);
-        }
-
         double timeInSystem = myAgent().getFinishedFurnitureList().addFinishedFurniture(message.getFurniture());
         myAgent().getTovarTimeInSystemStat().addSample(mySim().currentTime() - message.getFurniture().getArrivalTime());
         myAgent().addTovarTimeInSystem(mySim().currentTime() - message.getFurniture().getArrivalTime());
@@ -53,8 +46,20 @@ public class ManagerVyroby extends OSPABA.Manager {
             //je posledny z objednavky, cize...
 //            System.out.println("Nabytok bol v systeme :" + ((mySim().currentTime() - timeInSystem) / 60000));
             myAgent().getOrderTimeInSystemStat().addSample(mySim().currentTime() - timeInSystem);
+            myAgent().addOrderTimeInSystem(mySim().currentTime() - timeInSystem);
+            myAgent().addFinishedOrderCount();
 //            System.out.println("Priemerna doba v systeme:" + myAgent().getOrderTimeInSystemStat().mean() / 60000);
         }
+
+        //todo uvolnil sa stol takze moze ist A
+        if (!((AgentA) mySim().findAgent(Id.agentA)).getStorage().isEmpty()) {
+            MyMessage newMessage = (MyMessage) message.createCopy();
+            newMessage.setFurniture(null);
+            newMessage.setCode(Mc.prijemTovaru);
+            newMessage.setAddressee(mySim().findAgent(Id.agentA));
+            request(newMessage);
+        }
+
         message.setCode(Mc.spracujObjednavku);
         response(message);
     }
@@ -134,7 +139,6 @@ public class ManagerVyroby extends OSPABA.Manager {
     //meta! sender="AgentModelu", id="17", type="Request"
     public void processSpracujObjednavku(MessageForm message) {
 //        System.out.println("Agent vyroby spracovava objednavku v case:" + mySim().currentTime());
-
         message.setCode(Mc.prijemTovaru);
         message.setAddressee(mySim().findAgent(Id.agentA));
         request(message); //skusim mu to poslat bez pracovnika aby to nahodil do skladu, keby neide prehod tie 3 riadky od tade hore hore

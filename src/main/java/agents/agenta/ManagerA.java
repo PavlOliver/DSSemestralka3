@@ -37,9 +37,6 @@ public class ManagerA extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="19", type="Request"
     public void processKovanie(MessageForm message) {
-        //tu myslim ze nemoze sa stat ze bude worker null
-        //mySim().pauseSimulation();
-        //((MyMessage) message).getWorker().setBusy(true);
         message.setCode(Mc.presun);
         message.setAddressee(myAgent().parent());
         request(message);
@@ -109,14 +106,13 @@ public class ManagerA extends OSPABA.Manager {
         if (!myAgent().getStorage().isEmpty()) {
             WorkingPlace workingPlace = myAgent().getWorkingPlaces().getFreeWorkingPlace();
             if (workingPlace != null) {
-                //Furnitures order = myAgent().getStorage().peek();
                 Furniture furniture = myAgent().getStorage().dequeue();
+                ((AgentVyroby)myAgent().parent()).getFinishedFurnitureList().addStartedFurniture(furniture);
                 if (mySim().animatorExists()) {
                     AnimItem ai = ((MySimulation) mySim()).getAnimQueue().remove(furniture.getAnimImageItem());
                     ai.clear();
                 }
                 furniture.setWorkingPlace(workingPlace);
-                //myAgent().addFurniture(furniture); //sledovanie nabytkov v systeme
                 ((AgentVyroby) myAgent().parent()).addFurniture(furniture);
                 workingPlace.setCurrentFurniture(furniture);
                 workingPlace.setCurrentWorker(message.getWorker());
@@ -141,13 +137,6 @@ public class ManagerA extends OSPABA.Manager {
 
     //meta! sender="AgentVyroby", id="18", type="Request"
     public void processPrijemTovaru(MessageForm message) {
-        //System.out.println("Agent A spracovava objednavku v case:" + mySim().currentTime());
-//        Furnitures furnitures = new Furnitures(((MySimulation) mySim()).getOrderId(), mySim().currentTime(), ((MySimulation) mySim()).getSeedGenerator());
-//        myAgent().getStorage().enqueue(furnitures);
-//        ((AgentVyroby) myAgent().parent()).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
-
-//        System.out.println("objednavka " + myAgent().getStorage().peek().getOrderId() + " v case: " + mySim().currentTime());
-//        System.out.println("volnych: " + ((AgentVyroby)myAgent().parent()).getWorkersA().getFreeWorkersCount());
         Worker worker = ((AgentVyroby) myAgent().parent()).getWorkersA().getFreeWorker();
 
         if (worker != null) {

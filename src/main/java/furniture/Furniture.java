@@ -3,9 +3,11 @@ package furniture;
 import OSPAnimator.AnimImageItem;
 import OSPAnimator.AnimItem;
 import OSPAnimator.AnimTextItem;
+import simulation.MySimulation;
 import workingplace.WorkingPlace;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Furniture implements Comparable<Furniture> {
     private final int id;
@@ -17,6 +19,24 @@ public class Furniture implements Comparable<Furniture> {
     private double lastStepTime;
     private final AnimImageItem animImageItem;
 
+    public void loadAnimItems(MySimulation mySim) {
+        if (mySim.animatorExists()) {
+            mySim.animator().register(animImageItem);
+            animImageItem.setVisible(true);
+            animImageItem.setToolTip("id: " + orderId + "(" + id + ")" + "\n" +
+                    "type: " + type + "\n" +
+                    "state: " + state);
+            WorkingPlace workingPlace = mySim.getWorkingPlaces().getWorkingPlaceByFuriture(this);
+            if (workingPlace != null) {
+                Point2D wp = workingPlace.getAnimShapeItem().getPosition(mySim.currentTime());
+                this.animImageItem.setPosition(wp);
+            } else {
+//                this.animImageItem.setPosition(new Point(id * 50 + 1300, type.getValue() * 50 + 200));
+            }
+
+        }
+    }
+
 
     public Furniture(int id, int orderId, FurnitureType type, double arrivalTime) {
         this.id = id;
@@ -25,7 +45,7 @@ public class Furniture implements Comparable<Furniture> {
         this.state = FurnitureState.PACKED;
         this.workingPlace = null;
         this.arrivalTime = arrivalTime;
-        this.lastStepTime = 0;
+        this.lastStepTime = 0; //i ked dam arrivalTime ziadna zmena
         this.animImageItem = new AnimImageItem(type.getImage(), 40, 40);
         animImageItem.setPositionAlignment(AnimImageItem.PositionAlignment.TOP_LEFT);
         animImageItem.setToolTip("id: " + orderId + "(" + id + ")" + "\n" +

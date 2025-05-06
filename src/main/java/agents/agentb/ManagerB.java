@@ -44,6 +44,7 @@ public class ManagerB extends OSPABA.Manager {
 
         Worker worker = ((MyMessage) message).getWorker();
         ((MyMessage) message).setWorker(null);
+        worker.setCurrentFurniture(null);
 
         //najdem mu novu pracu
         if(!myAgent().getQueueSkladaniaPriority().isEmpty()) {
@@ -61,7 +62,6 @@ public class ManagerB extends OSPABA.Manager {
             request(newMessage);
         } else {
             worker.setBusy(false);
-            worker.setCurrentFurniture(null);
         }
 
         message.setCode(Mc.skladanie);

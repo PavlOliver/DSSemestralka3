@@ -14,10 +14,17 @@ public class WorkingPlaces {
         this.workingPlaces = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             this.workingPlaces.add(new WorkingPlace(i, mySim));
-            if(mySim.animatorExists()) {
+            if (mySim.animatorExists()) {
                 mySim.animator().register(workingPlaces.get(i).getAnimShapeItem());
                 mySim.animator().register(workingPlaces.get(i).getAnimTextItem());
+                mySim.animator().register(workingPlaces.get(i).getAnimImageItem());
             }
+        }
+    }
+
+    public void loadAnimItems(MySimulation mySim) {
+        for (WorkingPlace workingPlace : workingPlaces) {
+            workingPlace.loadAnimItems(mySim);
         }
     }
 
@@ -39,6 +46,9 @@ public class WorkingPlaces {
     }
 
     public WorkingPlace getWorkingPlaceByFuriture(Furniture furniture) {
+        if (furniture == null) {
+            return null;
+        }
         for (WorkingPlace workingPlace : workingPlaces) {
             if (workingPlace.getCurrentFurniture() == furniture) {
                 return workingPlace;

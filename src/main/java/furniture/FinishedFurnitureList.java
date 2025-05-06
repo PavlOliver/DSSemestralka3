@@ -15,6 +15,10 @@ public class FinishedFurnitureList {
         finishedFurnituresList.add(finishedFurniture);
     }
 
+    public List<FinishedFurnitures> getFinishedFurnituresList() {
+        return finishedFurnituresList;
+    }
+
     public double addFinishedFurniture(Furniture furniture) { //vrati -1 ak to nebol posledny kus z objednavky, ak bol tak vrati cas v systeme
         for (FinishedFurnitures finishedFurniture : finishedFurnituresList) {
             if (finishedFurniture.getOrderId() == furniture.getOrderId()) {
@@ -28,6 +32,24 @@ public class FinishedFurnitureList {
         return -1d;
 //        FinishedFurnitures newFinishedFurniture = new FinishedFurnitures(furniture.getOrderId(), 1);
 //        finishedFurnituresList.add(newFinishedFurniture);
+    }
+
+    public void addStartedFurniture(Furniture furniture) {
+        for (FinishedFurnitures finishedFurniture : finishedFurnituresList) {
+            if (finishedFurniture.getOrderId() == furniture.getOrderId()) {
+                finishedFurniture.setStarted(true);
+            }
+        }
+    }
+
+    public int getUnstartedFurnituresCount() {
+        int count = 0;
+        for (FinishedFurnitures finishedFurniture : finishedFurnituresList) {
+            if (!finishedFurniture.isStarted()) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }

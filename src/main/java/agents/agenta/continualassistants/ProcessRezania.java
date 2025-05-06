@@ -25,8 +25,8 @@ public class ProcessRezania extends OSPABA.Process {
         // Setup component for the next replication
         this.tableCuttingGenerator = new EmpiricRNG(
                 ((MySimulation) mySim()).getSeedGenerator(),
-                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0, ((MySimulation) mySim()).getSeedGenerator()), 0.6),
-                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0, ((MySimulation) mySim()).getSeedGenerator()), 0.4)
+                new EmpiricPair(new UniformContinuousRNG(10.0, 25.0, ((MySimulation) mySim()).getSeedGenerator()), .6),
+                new EmpiricPair(new UniformContinuousRNG(25.0, 50.0, ((MySimulation) mySim()).getSeedGenerator()), .4)
         );
         this.chairCuttingGenerator = new UniformContinuousRNG(12.0, 16.0,
                 ((MySimulation) mySim()).getSeedGenerator());

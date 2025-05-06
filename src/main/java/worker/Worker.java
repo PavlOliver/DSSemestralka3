@@ -5,8 +5,10 @@ import OSPStat.Stat;
 import OSPStat.WStat;
 import furniture.Furniture;
 import simulation.MySimulation;
+import workingplace.WorkingPlace;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Worker {
     private final int id;
@@ -29,6 +31,21 @@ public class Worker {
         this.animImageItem = new AnimImageItem(type.getImagePath(), 40, 40);
         this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, type.getValue() * 50 + 200));
         this.animImageItem.setToolTip(toTooltip());
+    }
+
+    public void loadAnimItems(MySimulation mySim) {
+        if (mySim.animatorExists()) {
+            mySim.animator().register(animImageItem);
+            this.updateTooltip();
+
+            WorkingPlace workingPlace = mySim.getWorkingPlaces().getWorkingPlaceByFuriture(currentFurniture);
+            if (workingPlace != null) {
+                Point2D wp = workingPlace.getAnimShapeItem().getPosition(mySim.currentTime());
+                this.animImageItem.setPosition(new Point((int) (wp.getX() + 50), (int) (wp.getY() + 50)));
+            } else {
+                this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, type.getValue() * 50 + 200));
+            }
+        }
     }
 
     public int getId() {
@@ -58,6 +75,7 @@ public class Worker {
 
     public void setCurrentFurniture(Furniture currentFurniture) {
         this.currentFurniture = currentFurniture;
+//        utilityWStat.addSample(currentFurniture != null ? 1d : 0d);
     }
 
     public WorkerPosition getPosition() {

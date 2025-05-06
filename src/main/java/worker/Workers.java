@@ -18,6 +18,12 @@ public class Workers {
         }
     }
 
+    public void loadAnimItems(MySimulation mySim) {
+        for (Worker worker : workers) {
+            worker.loadAnimItems(mySim);
+        }
+    }
+
     public Worker getFreeWorker() {
         for (Worker worker : workers) {
             if (!worker.isBusy()) {

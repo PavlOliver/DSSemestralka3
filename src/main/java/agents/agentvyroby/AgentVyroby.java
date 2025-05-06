@@ -27,7 +27,9 @@ public class AgentVyroby extends OSPABA.Agent {
     private Stat orderTimeInSystemStat;
     private Stat tovarTimeInSystemStat;
     private double tovarTimeInSystem;
+    private double orderTimeInSystem;
     private int finishedTovarCount;
+    private int finishedOrderCount;
 
     public AgentVyroby(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -48,6 +50,8 @@ public class AgentVyroby extends OSPABA.Agent {
         tovarTimeInSystemStat = new Stat();
         tovarTimeInSystem = 0;
         finishedTovarCount = 0;
+        finishedOrderCount = 0;
+        orderTimeInSystem = 0;
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"
@@ -113,6 +117,24 @@ public class AgentVyroby extends OSPABA.Agent {
     public void addFinishedTovarCount() {
         finishedTovarCount++;
     }
+
+    public int getFinishedOrderCount() {
+        return finishedOrderCount;
+    }
+
+    public void addFinishedOrderCount() {
+        finishedOrderCount++;
+    }
+
+    public double getOrderTimeInSystem() {
+        return orderTimeInSystem;
+    }
+
+    public void addOrderTimeInSystem(double time) {
+        orderTimeInSystem += time;
+    }
+
+
 
     public void setSizes(int sizeA, int sizeB, int sizeC) {
         workersA = new Workers(sizeA, WorkerType.A, (MySimulation) mySim());

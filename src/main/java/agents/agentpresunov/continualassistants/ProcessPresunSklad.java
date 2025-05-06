@@ -15,7 +15,7 @@ import java.awt.geom.Point2D;
 
 //meta! id="28"
 public class ProcessPresunSklad extends OSPABA.Process {
-    private final TriangularRNG presunSkladRNG = new TriangularRNG(60d, 120d, 480d, ((MySimulation) mySim()).getSeedGenerator());
+    private TriangularRNG presunSkladRNG;
 
     public ProcessPresunSklad(int id, Simulation mySim, CommonAgent myAgent) {
         super(id, mySim, myAgent);
@@ -25,6 +25,7 @@ public class ProcessPresunSklad extends OSPABA.Process {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
+        this.presunSkladRNG = new TriangularRNG(60d, 120d, 480d, ((MySimulation) mySim()).getSeedGenerator());
     }
 
     //meta! sender="AgentPresunov", id="29", type="Start"
