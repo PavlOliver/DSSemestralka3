@@ -73,10 +73,10 @@ public class ManagerC extends OSPABA.Manager {
         message.setWorker(null);
 
         //najdem mu novu pracu
-        if (!((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().isEmpty()) {
+        if (!((MySimulation) mySim()).getQueueKovaniaPriority().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorker(worker);
-            Furniture furniture = ((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().poll();
+            Furniture furniture = ((MySimulation) mySim()).getQueueKovaniaPriority().poll();
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -86,11 +86,11 @@ public class ManagerC extends OSPABA.Manager {
             newMessage.setAddressee(myAgent().parent());
             request(newMessage);
         } else {
-            if (!myAgent().getQueueMoreniaPriority().isEmpty()) {
+            if (!((MySimulation) mySim()).getQueueMoreniaPriority().isEmpty()) {
                 MyMessage newMessage = (MyMessage) message.createCopy();
 
                 newMessage.setWorker(worker);
-                Furniture furniture = myAgent().getQueueMoreniaPriority().poll();
+                Furniture furniture = ((MySimulation) mySim()).getQueueMoreniaPriority().poll();
                 newMessage.setFurniture(furniture);
                 newMessage.setWorkingPlace(furniture.getWorkingPlace());
                 newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -126,7 +126,7 @@ public class ManagerC extends OSPABA.Manager {
             request(message);
         } else {
             //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
-            myAgent().getQueueMoreniaPriority().add(((MyMessage) message).getFurniture());
+            ((MySimulation) mySim()).getQueueMoreniaPriority().add(((MyMessage) message).getFurniture());
             //response(message); //nic nezrobilo ani sa robit nebude
         }
     }

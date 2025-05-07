@@ -50,7 +50,7 @@ public class ManagerOkolia extends OSPABA.Manager {
                 ((AgentVyroby) mySim().findAgent(Id.agentVyroby)).getFinishedFurnitureList().add(furnitures, mySim().currentTime());
 
                 for (Furniture f : furnitures.getAllFurnituresInOrder()) {
-                    ((AgentA) mySim().findAgent(Id.agentA)).getStorage().enqueue(f);
+                    ((MySimulation) mySim()).getStorage().enqueue(f);
                     if (f.getId() > 0)
                         message = message.createCopy();
 

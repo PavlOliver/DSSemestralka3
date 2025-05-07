@@ -32,7 +32,7 @@ public class ManagerB extends OSPABA.Manager {
             request(message);
         } else {
             //myAgent().getQueueSkladania().enqueue(((MyMessage) message).getFurniture());
-            myAgent().getQueueSkladaniaPriority().add(((MyMessage) message).getFurniture());
+            ((MySimulation) mySim()).getQueueSkladaniaPriority().add(((MyMessage) message).getFurniture());
         }
     }
 
@@ -47,11 +47,11 @@ public class ManagerB extends OSPABA.Manager {
         worker.setCurrentFurniture(null);
 
         //najdem mu novu pracu
-        if(!myAgent().getQueueSkladaniaPriority().isEmpty()) {
+        if(!((MySimulation) mySim()).getQueueSkladaniaPriority().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
 
             newMessage.setWorker(worker);
-            Furniture furniture = myAgent().getQueueSkladaniaPriority().poll();
+            Furniture furniture = ((MySimulation) mySim()).getQueueSkladaniaPriority().poll();
             worker.setCurrentFurniture(furniture);
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());

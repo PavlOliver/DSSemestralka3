@@ -21,7 +21,6 @@ public class AgentVyroby extends OSPABA.Agent {
     Workers workersA;
     Workers workersC;
     Workers workersB;
-    private PriorityQueue<Furniture> queueKovaniaPriority;
     private List<Furniture> furnitureList;
     private FinishedFurnitureList finishedFurnitureList;
     private Stat orderTimeInSystemStat;
@@ -40,10 +39,8 @@ public class AgentVyroby extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        queueKovaniaPriority = new PriorityQueue<>();
 
         furnitureList = new ArrayList<>();
-
         finishedFurnitureList = new FinishedFurnitureList();
 
         orderTimeInSystemStat = new Stat();
@@ -84,10 +81,6 @@ public class AgentVyroby extends OSPABA.Agent {
 
     public List<Furniture> getFurnitureList() {
         return furnitureList;
-    }
-
-    public PriorityQueue<Furniture> getQueueKovaniaPriority() {
-        return queueKovaniaPriority;
     }
 
     public FinishedFurnitureList getFinishedFurnitureList() {
@@ -133,8 +126,6 @@ public class AgentVyroby extends OSPABA.Agent {
     public void addOrderTimeInSystem(double time) {
         orderTimeInSystem += time;
     }
-
-
 
     public void setSizes(int sizeA, int sizeB, int sizeC) {
         workersA = new Workers(sizeA, WorkerType.A, (MySimulation) mySim());

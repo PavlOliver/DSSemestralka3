@@ -52,7 +52,7 @@ public class ManagerVyroby extends OSPABA.Manager {
         }
 
         //todo uvolnil sa stol takze moze ist A
-        if (!((AgentA) mySim().findAgent(Id.agentA)).getStorage().isEmpty()) {
+        if (!((MySimulation) mySim()).getStorage().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setFurniture(null);
             newMessage.setCode(Mc.prijemTovaru);
@@ -95,7 +95,7 @@ public class ManagerVyroby extends OSPABA.Manager {
                 request(message);
             } else {
                 //myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
-                myAgent().getQueueKovaniaPriority().add(((MyMessage) message).getFurniture());
+                ((MySimulation) mySim()).getQueueKovaniaPriority().add(((MyMessage) message).getFurniture());
             }
 
         } else {

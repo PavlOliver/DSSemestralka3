@@ -6,6 +6,7 @@ import OSPAnimator.AnimShape;
 import OSPAnimator.AnimShapeItem;
 import OSPDataStruct.SimQueue;
 import OSPStat.Stat;
+import OSPStat.WStat;
 import agents.agentvyroby.*;
 import agents.agentokolia.*;
 import agents.agentpresunov.*;
@@ -23,10 +24,18 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 
 public class MySimulation extends OSPABA.Simulation {
+    private SimQueue<Furniture> storage;
+    private WStat dlzkaStorageStat;
+    private PriorityQueue<Furniture> queueSkladaniaPriority;
+    private PriorityQueue<Furniture> queueMoreniaPriority;
+    private PriorityQueue<Furniture> queueKovaniaPriority;
+
+
     private int orderId;
     private Random seedGenerator;
 
@@ -66,7 +75,10 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareSimulation() {
         super.prepareSimulation();
         // Create global statistcis
-        this.seedGenerator = new Random(); // 1234567987L //12345679101L
+        this.seedGenerator = new Random(1234567987L); // 1234567987L //12345679101L
+
+        //dlzkaStorageStat = new WStat(this);
+        //storage = new SimQueue<>(dlzkaStorageStat);
 
         priemernaDobaObjednavkyVSystemeStat = new Stat();
         priemernaDobaTovaruVSystemeStat = new Stat();
@@ -99,7 +111,7 @@ public class MySimulation extends OSPABA.Simulation {
             queueItem.setPosition(new Point(0, 20));
             queueItem.setColor(Color.LIGHT_GRAY);
             animator().register(queueItem);
-            for (Furniture f : _agentA.getStorage()) {
+            for (Furniture f : storage) {
                 f.loadAnimItems(this);
                 animQueue.insert(f.getAnimImageItem());
             }
@@ -125,6 +137,13 @@ public class MySimulation extends OSPABA.Simulation {
         averageOrderTime = 0;
 
         this.orderId = 0;
+
+        this.dlzkaStorageStat = new WStat(this);
+        this.storage = new SimQueue<>(dlzkaStorageStat);
+        queueSkladaniaPriority = new PriorityQueue<>();
+        queueMoreniaPriority = new PriorityQueue<>();
+        queueKovaniaPriority = new PriorityQueue<>();
+
     }
 
     @Override
@@ -294,7 +313,19 @@ public class MySimulation extends OSPABA.Simulation {
     }
 
     public SimQueue<Furniture> getStorage() {
-        return agentA().getStorage();
+        return this.storage;
+    }
+
+    public PriorityQueue<Furniture> getQueueSkladaniaPriority() {
+        return queueSkladaniaPriority;
+    }
+
+    public PriorityQueue<Furniture> getQueueMoreniaPriority() {
+        return queueMoreniaPriority;
+    }
+
+    public PriorityQueue<Furniture> getQueueKovaniaPriority() {
+        return queueKovaniaPriority;
     }
 
     public WorkingPlaces getWorkingPlaces() {

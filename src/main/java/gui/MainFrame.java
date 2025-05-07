@@ -33,7 +33,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private double simInterval = 1000d;
     private double simDuration = 0.001d;
 
-
     //labels
     private JLabel simulationTimeLabel;
 
@@ -253,9 +252,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
             this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
 
-            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).agentC().getQueueMoreniaPriority().size());
-            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).agentB().getQueueSkladaniaPriority().size());
-            this.sizeOfQueueKovania.setText("Size of queue Kovania: " + ((MySimulation) simulation).agentVyroby().getQueueKovaniaPriority().size());
+            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).getQueueMoreniaPriority().size());
+            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).getQueueSkladaniaPriority().size());
+            this.sizeOfQueueKovania.setText("Size of queue Kovania: " + ((MySimulation) simulation).getQueueKovaniaPriority().size());
         });
         //this.simulationTimeLabel.setText("Simulation time: " + Mc.toHumanTime(simulation.currentTime()));
     }

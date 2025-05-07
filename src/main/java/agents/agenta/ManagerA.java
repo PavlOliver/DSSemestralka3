@@ -80,10 +80,10 @@ public class ManagerA extends OSPABA.Manager {
         message.setWorker(null);
 
         //najdem mu novu pracu
-        if (!((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().isEmpty()) {
+        if (!((MySimulation) mySim()).getQueueKovaniaPriority().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorker(worker);
-            Furniture furniture = ((AgentVyroby) myAgent().parent()).getQueueKovaniaPriority().poll();
+            Furniture furniture = ((MySimulation) mySim()).getQueueKovaniaPriority().poll();
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -103,11 +103,11 @@ public class ManagerA extends OSPABA.Manager {
     }
 
     private void startWorking(MyMessage message) {
-        if (!myAgent().getStorage().isEmpty()) {
+        if (!((MySimulation) mySim()).getStorage().isEmpty()) {
             WorkingPlace workingPlace = myAgent().getWorkingPlaces().getFreeWorkingPlace();
             if (workingPlace != null) {
-                Furniture furniture = myAgent().getStorage().dequeue();
-                ((AgentVyroby)myAgent().parent()).getFinishedFurnitureList().addStartedFurniture(furniture);
+                Furniture furniture = ((MySimulation) mySim()).getStorage().dequeue();
+                ((AgentVyroby) myAgent().parent()).getFinishedFurnitureList().addStartedFurniture(furniture);
                 if (mySim().animatorExists()) {
                     AnimItem ai = ((MySimulation) mySim()).getAnimQueue().remove(furniture.getAnimImageItem());
                     ai.clear();
@@ -118,7 +118,7 @@ public class ManagerA extends OSPABA.Manager {
                 workingPlace.setCurrentWorker(message.getWorker());
                 message.setFurniture(furniture);
                 message.setWorkingPlace(workingPlace);
-                if(!message.getWorker().isBusy()) {
+                if (!message.getWorker().isBusy()) {
                     message.getWorker().setBusy(true);
                 }
                 message.getWorker().setCurrentFurniture(furniture);

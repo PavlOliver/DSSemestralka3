@@ -13,8 +13,6 @@ import workingplace.WorkingPlaces;
 //meta! id="4"
 public class AgentA extends OSPABA.Agent {
     private WorkingPlaces workingPlaces;
-    private SimQueue<Furniture> storage;
-    private WStat dlzkaStorageStat;
 
     public AgentA(int id, Simulation mySim, Agent parent) {
         super(id, mySim, parent);
@@ -25,8 +23,6 @@ public class AgentA extends OSPABA.Agent {
     public void prepareReplication() {
         super.prepareReplication();
         // Setup component for the next replication
-        dlzkaStorageStat = new WStat(mySim());
-        storage = new SimQueue<>(dlzkaStorageStat);
 
         //workingPlaces = new WorkingPlaces(80);
         addOwnMessage(Mc.pripravaMaterialu);
@@ -46,10 +42,6 @@ public class AgentA extends OSPABA.Agent {
     }
 
     //meta! tag="end"
-    public SimQueue<Furniture> getStorage() {
-        return storage;
-    }
-
     public WorkingPlaces getWorkingPlaces() {
         return workingPlaces;
     }
