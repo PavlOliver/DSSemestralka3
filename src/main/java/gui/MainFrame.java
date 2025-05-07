@@ -13,6 +13,14 @@ import simulation.TimeFunctions;
 import worker.WorkerType;
 import worker.Workers;
 import workingplace.WorkingPlaces;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,12 +52,16 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
 
     private JPanel centerPanel;
 
-    private JLabel sizeOfQueueMorenia;
-    private JLabel sizeOfQueueStavania;
-    private JLabel sizeOfQueueKovania;
+    //private JLabel sizeOfQueueMorenia;
+    //private JLabel sizeOfQueueStavania;
+    //private JLabel sizeOfQueueKovania;
 
     private boolean animation = false;
     private boolean stopFlag = false;
+
+    private XYSeries series;
+    private XYSeries seriesUp;
+    private XYSeries seriesDown;
 
 
     public MainFrame() {
@@ -93,8 +105,13 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     }
 
     private void init() {
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+
         this.simulationTimeLabel = new JLabel("Simulation time: 0.0");
-        this.add(simulationTimeLabel, BorderLayout.NORTH);
+        topPanel.add(simulationTimeLabel);
+
+        this.add(topPanel, BorderLayout.NORTH);
 
         centerPanel = new JPanel();
         this.initCenter();
@@ -104,34 +121,40 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         controlPanel.setBorder(BorderFactory.createTitledBorder("Control"));
         add(controlPanel, BorderLayout.SOUTH);
 
-        JTextField replicationCountField = new JTextField("1");
+        JTextField replicationCountField = new JTextField("500");
         replicationCountField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(new JLabel("replications:"));
         controlPanel.add(replicationCountField);
 
-        numberOfAField = new JTextField("5");
+        numberOfAField = new JTextField("6");
         numberOfAField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(new JLabel("A:"));
         controlPanel.add(numberOfAField);
 
-        numberOfBField = new JTextField("5");
+        numberOfBField = new JTextField("6");
         numberOfBField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(new JLabel("B:"));
         controlPanel.add(numberOfBField);
 
-        numberOfCField = new JTextField("40");
+        numberOfCField = new JTextField("39");
         numberOfCField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(new JLabel("C:"));
         controlPanel.add(numberOfCField);
 
-        numberOfWPField = new JTextField("5");
+        numberOfWPField = new JTextField("51");
         numberOfWPField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(new JLabel("WP:"));
         controlPanel.add(numberOfWPField);
 
-        this.sizeOfQueueMorenia = new JLabel("Size of queue Morenia: 0");
-        this.sizeOfQueueStavania = new JLabel("Size of queue Stavania: 0");
-        this.sizeOfQueueKovania = new JLabel("Size of queue Kovania: 0");
-        controlPanel.add(sizeOfQueueMorenia);
-        controlPanel.add(sizeOfQueueStavania);
-        controlPanel.add(sizeOfQueueKovania);
 
+//        this.sizeOfQueueMorenia = new JLabel("Size of queue Morenia: 0");
+//        this.sizeOfQueueStavania = new JLabel("Size of queue Stavania: 0");
+//        this.sizeOfQueueKovania = new JLabel("Size of queue Kovania: 0");
+//        controlPanel.add(sizeOfQueueMorenia);
+//        controlPanel.add(sizeOfQueueStavania);
+//        controlPanel.add(sizeOfQueueKovania);
 
+        JButton startSim = new JButton("Start Simulation");
         JButton startButton = new JButton("Start");
         JButton stopButton = new JButton("Stop");
 
@@ -142,6 +165,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             //animation = false;
             this.startSimulation();
             stopButton.setEnabled(true);
+            startSim.setEnabled(false);
         });
 
         stopButton.addActionListener(e -> {
@@ -149,6 +173,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             simulation.stopSimulation();
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
+            startSim.setEnabled(true);
         });
 
         JButton pauseButton = new JButton("Pause");
@@ -223,6 +248,76 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             worker.execute();
         });
 
+        startSim.addActionListener(e -> {
+            startButton.setEnabled(false);
+            stopButton.setEnabled(true);
+            startSim.setEnabled(false);
+            startAnimationButton.setEnabled(false);
+            centerPanel.removeAll();
+            if (simulation != null) {
+                simulation.stopSimulation();
+                if (simulation.animatorExists()) {
+                    simulation.removeAnimator();
+                }
+            }
+
+            simulation = new MySimulation();
+            simulation.settings(
+                    Integer.parseInt(numberOfAField.getText()),
+                    Integer.parseInt(numberOfBField.getText()),
+                    Integer.parseInt(numberOfCField.getText()),
+                    Integer.parseInt(numberOfWPField.getText())
+            );
+
+            series = new XYSeries("time in system");
+            seriesUp = new XYSeries("Upper bound");
+            seriesDown = new XYSeries("Lower bound");
+            XYSeriesCollection dataset = new XYSeriesCollection();
+            dataset.addSeries(series);
+            dataset.addSeries(seriesUp);
+            dataset.addSeries(seriesDown);
+
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "Furniture",
+                    "Time",
+                    "time in system (h)",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false
+            );
+
+            XYPlot plot = chart.getXYPlot();
+            NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+            rangeAxis.setAutoRange(true);
+            rangeAxis.setAutoRangeIncludesZero(false);
+
+            ChartPanel chartPanel = new ChartPanel(chart);
+            centerPanel.add(chartPanel);
+            centerPanel.revalidate();
+            centerPanel.repaint();
+
+            simulation.onReplicationDidFinish(s -> {
+                System.out.println("Replication finished: " + simulation.currentReplication());
+
+                series.add(simulation.currentReplication(), simulation.getPriemernaDobaObjednavkyVSystemeStat().mean() / 3600000);
+                if (simulation.currentReplication() > 2) {
+                    double[] confidenceInterval = simulation.getPriemernaDobaObjednavkyVSystemeStat().confidenceInterval_95();
+                    seriesUp.add(simulation.currentReplication(), confidenceInterval[0] / 3600000);
+                    seriesDown.add(simulation.currentReplication(), confidenceInterval[1] / 3600000);
+                }
+            });
+
+            simulation.onSimulationDidFinish(s -> {
+                startSim.setEnabled(true);
+            });
+
+            simulation.simulateAsync(Integer.parseInt(replicationCountField.getText()), (double) 249 * 8 * 60 * 60 * 1000);
+
+        });
+
+        controlPanel.add(startSim);
         controlPanel.add(startButton);
         controlPanel.add(stopButton);
         controlPanel.add(pauseButton);
@@ -252,9 +347,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
             this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
 
-            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).getQueueMoreniaPriority().size());
-            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).getQueueSkladaniaPriority().size());
-            this.sizeOfQueueKovania.setText("Size of queue Kovania: " + ((MySimulation) simulation).getQueueKovaniaPriority().size());
+//            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).getQueueMoreniaPriority().size());
+//            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).getQueueSkladaniaPriority().size());
+//            this.sizeOfQueueKovania.setText("Size of queue Kovania: " + ((MySimulation) simulation).getQueueKovaniaPriority().size());
         });
         //this.simulationTimeLabel.setText("Simulation time: " + Mc.toHumanTime(simulation.currentTime()));
     }

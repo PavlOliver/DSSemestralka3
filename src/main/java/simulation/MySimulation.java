@@ -193,28 +193,30 @@ public class MySimulation extends OSPABA.Simulation {
         System.out.println("Workload A: " + workloadA.mean());
         System.out.println("Workload B: " + workloadB.mean());
         System.out.println("Workload C: " + workloadC.mean());
+        if(replicationCount() > 1) {
 
-        String result = String.format("%.2f<%.2f - %.2f>",
-                priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000,
-                priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[0] / 60 / 60 / 1000,
-                priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[1] / 60 / 60 / 1000);
+            String result = String.format("%.2f<%.2f - %.2f>",
+                    priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000,
+                    priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[0] / 60 / 60 / 1000,
+                    priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[1] / 60 / 60 / 1000);
 
-        try {
-            csvWriter.append(String.format("%d;%d;%d;%d;%d;%s;%s;%s;%s;%s\n",
-                    super.replicationCount(),
-                    A,
-                    B,
-                    C,
-                    WP,
-                    result,
-                    String.format("%.2f <%.2f - %.2f>", workloadA.mean() * 100, workloadA.confidenceInterval_95()[0] * 100, workloadA.confidenceInterval_95()[1] * 100),
-                    String.format("%.2f <%.2f - %.2f>", workloadB.mean() * 100, workloadB.confidenceInterval_95()[0] * 100, workloadB.confidenceInterval_95()[1] * 100),
-                    String.format("%.2f <%.2f - %.2f>", workloadC.mean() * 100, workloadC.confidenceInterval_95()[0] * 100, workloadC.confidenceInterval_95()[1] * 100),
-                    String.format("%.2f <%.2f - %.2f>", unstartedOrdersStat.mean(), unstartedOrdersStat.confidenceInterval_95()[0], unstartedOrdersStat.confidenceInterval_95()[1])
-            ));
-            csvWriter.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            try {
+                csvWriter.append(String.format("%d;%d;%d;%d;%d;%s;%s;%s;%s;%s\n",
+                        super.replicationCount(),
+                        A,
+                        B,
+                        C,
+                        WP,
+                        result,
+                        String.format("%.2f <%.2f - %.2f>", workloadA.mean() * 100, workloadA.confidenceInterval_95()[0] * 100, workloadA.confidenceInterval_95()[1] * 100),
+                        String.format("%.2f <%.2f - %.2f>", workloadB.mean() * 100, workloadB.confidenceInterval_95()[0] * 100, workloadB.confidenceInterval_95()[1] * 100),
+                        String.format("%.2f <%.2f - %.2f>", workloadC.mean() * 100, workloadC.confidenceInterval_95()[0] * 100, workloadC.confidenceInterval_95()[1] * 100),
+                        String.format("%.2f <%.2f - %.2f>", unstartedOrdersStat.mean(), unstartedOrdersStat.confidenceInterval_95()[0], unstartedOrdersStat.confidenceInterval_95()[1])
+                ));
+                csvWriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -350,5 +352,9 @@ public class MySimulation extends OSPABA.Simulation {
 
     public AnimQueue getAnimQueue() {
         return animQueue;
+    }
+
+    public Stat getPriemernaDobaObjednavkyVSystemeStat() {
+        return priemernaDobaObjednavkyVSystemeStat;
     }
 }
