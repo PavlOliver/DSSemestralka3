@@ -37,6 +37,12 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     //labels
     private JLabel simulationTimeLabel;
 
+    //fields
+    private JTextField numberOfAField;
+    private JTextField numberOfBField;
+    private JTextField numberOfCField;
+    private JTextField numberOfWPField;
+
     private JPanel centerPanel;
 
     private JLabel sizeOfQueueMorenia;
@@ -102,6 +108,22 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         JTextField replicationCountField = new JTextField("1");
         replicationCountField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(replicationCountField);
+
+        numberOfAField = new JTextField("5");
+        numberOfAField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(numberOfAField);
+
+        numberOfBField = new JTextField("5");
+        numberOfBField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(numberOfBField);
+
+        numberOfCField = new JTextField("40");
+        numberOfCField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(numberOfCField);
+
+        numberOfWPField = new JTextField("5");
+        numberOfWPField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(numberOfWPField);
 
         this.sizeOfQueueMorenia = new JLabel("Size of queue Morenia: 0");
         this.sizeOfQueueStavania = new JLabel("Size of queue Stavania: 0");
@@ -240,6 +262,12 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
 
     private void startSimulation() {
         simulation = new MySimulation();
+        simulation.settings(
+                Integer.parseInt(numberOfAField.getText()),
+                Integer.parseInt(numberOfBField.getText()),
+                Integer.parseInt(numberOfCField.getText()),
+                Integer.parseInt(numberOfWPField.getText())
+        );
         centerPanel.removeAll();
         if (simulation.animatorExists()) {
             simulation.removeAnimator();

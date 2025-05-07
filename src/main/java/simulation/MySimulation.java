@@ -20,6 +20,8 @@ import worker.Workers;
 import workingplace.WorkingPlaces;
 
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -42,16 +44,29 @@ public class MySimulation extends OSPABA.Simulation {
 
     private double averageOrderTime;
 
+    private FileWriter csvWriter;
+
+    private int A;
+    private int B;
+    private int C;
+    private int WP;
 
     public MySimulation() {
         init();
+    }
+
+    public void settings(int A, int B, int C, int WP) {
+        this.A = A;
+        this.B = B;
+        this.C = C;
+        this.WP = WP;
     }
 
     @Override
     public void prepareSimulation() {
         super.prepareSimulation();
         // Create global statistcis
-        this.seedGenerator = new Random(1234567910L); // 1234567987L
+        this.seedGenerator = new Random(); // 1234567987L //12345679101L
 
         priemernaDobaObjednavkyVSystemeStat = new Stat();
         priemernaDobaTovaruVSystemeStat = new Stat();
@@ -62,6 +77,14 @@ public class MySimulation extends OSPABA.Simulation {
         unstartedOrdersStat = new Stat();
 
         this.startAnimation();
+
+        try {
+            csvWriter = new FileWriter("results.csv", true);
+            // napíš hlavičku
+            //csvWriter.append("replications;A;B;C;WP;orderTimeMean;workloadA;workloadB;workloadC;unstartedOrders\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startAnimation() {
@@ -71,6 +94,7 @@ public class MySimulation extends OSPABA.Simulation {
             animator().register(storageItem);
 
             this.animQueue = new AnimQueue(animator(), 1000, 20, 0, 20, 0);
+
             AnimShapeItem queueItem = new AnimShapeItem(AnimShape.RECTANGLE, 1050, Data.FURNITURE_SIZE);
             queueItem.setPosition(new Point(0, 20));
             queueItem.setColor(Color.LIGHT_GRAY);
@@ -96,8 +120,8 @@ public class MySimulation extends OSPABA.Simulation {
     public void prepareReplication() {
         super.prepareReplication();
         // Reset entities, queues, local statistics, etc...
-        agentA().setNumberOfWorkingPlaces(10);
-        agentVyroby().setSizes(3, 1, 5);
+        agentA().setNumberOfWorkingPlaces(WP);
+        agentVyroby().setSizes(A, B, C);
         averageOrderTime = 0;
 
         this.orderId = 0;
@@ -123,20 +147,19 @@ public class MySimulation extends OSPABA.Simulation {
         workloadC.addSample(agentVyroby().getWorkersC().getAverageUtilization());
         unstartedOrdersStat.addSample(agentVyroby().getFinishedFurnitureList().getUnstartedFurnituresCount());
         averageOrderTime += agentVyroby().getOrderTimeInSystem() / agentVyroby().getFinishedOrderCount();
-        System.out.println("Priemerne vytazenie A" + agentVyroby().getWorkersA().getAverageUtilization());
-        System.out.println("Priemerne vytazenie B" + agentVyroby().getWorkersB().getAverageUtilization());
-        System.out.println("Priemerne vytazenie C" + agentVyroby().getWorkersC().getAverageUtilization());
-        System.out.println("Priemerne vytazenie pracoviska" + agentA().getWorkingPlaces().getAverageUtilization());
 
-        System.out.println("Celkovy pocet nedokoncenych objednávok: " + unstartedOrdersStat.mean());
-
-
-        System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba objednávky v systéme: " + (priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000));
-        System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba tovaru v systéme: " + (priemernaDobaTovaruVSystemeStat.mean() / 60 / 60 / 1000));
-
-        System.out.println("Priemerna doba objednavky v systeme: " + (averageOrderTime / 60 / 60 / 1000));
-        //System.out.println("xx:" + (agentVyroby().getTovarTimeInSystem() / 60 / 60 / 1000 / agentVyroby().getFinishedTovarCount()));
-        //System.out.println("Some statistic: " + someProcessTimeStat.mean());
+//        System.out.println("Priemerne vytazenie A" + agentVyroby().getWorkersA().getAverageUtilization());
+//        System.out.println("Priemerne vytazenie B" + agentVyroby().getWorkersB().getAverageUtilization());
+//        System.out.println("Priemerne vytazenie C" + agentVyroby().getWorkersC().getAverageUtilization());
+//        System.out.println("Priemerne vytazenie pracoviska" + agentA().getWorkingPlaces().getAverageUtilization());
+//
+//        System.out.println("Celkovy pocet nedokoncenych objednávok: " + unstartedOrdersStat.mean());
+//
+//
+//        System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba objednávky v systéme: " + (priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000));
+//        System.out.println("Replikácia číslo " + currentReplication() + ". Celková priemerná doba tovaru v systéme: " + (priemernaDobaTovaruVSystemeStat.mean() / 60 / 60 / 1000));
+//
+//        System.out.println("Priemerna doba objednavky v systeme: " + (averageOrderTime / 60 / 60 / 1000));
     }
 
     @Override
@@ -151,6 +174,29 @@ public class MySimulation extends OSPABA.Simulation {
         System.out.println("Workload A: " + workloadA.mean());
         System.out.println("Workload B: " + workloadB.mean());
         System.out.println("Workload C: " + workloadC.mean());
+
+        String result = String.format("%.2f<%.2f - %.2f>",
+                priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000,
+                priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[0] / 60 / 60 / 1000,
+                priemernaDobaObjednavkyVSystemeStat.confidenceInterval_95()[1] / 60 / 60 / 1000);
+
+        try {
+            csvWriter.append(String.format("%d;%d;%d;%d;%d;%s;%s;%s;%s;%s\n",
+                    super.replicationCount(),
+                    A,
+                    B,
+                    C,
+                    WP,
+                    result,
+                    String.format("%.2f <%.2f - %.2f>", workloadA.mean() * 100, workloadA.confidenceInterval_95()[0] * 100, workloadA.confidenceInterval_95()[1] * 100),
+                    String.format("%.2f <%.2f - %.2f>", workloadB.mean() * 100, workloadB.confidenceInterval_95()[0] * 100, workloadB.confidenceInterval_95()[1] * 100),
+                    String.format("%.2f <%.2f - %.2f>", workloadC.mean() * 100, workloadC.confidenceInterval_95()[0] * 100, workloadC.confidenceInterval_95()[1] * 100),
+                    String.format("%.2f <%.2f - %.2f>", unstartedOrdersStat.mean(), unstartedOrdersStat.confidenceInterval_95()[0], unstartedOrdersStat.confidenceInterval_95()[1])
+            ));
+            csvWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //meta! userInfo="Generated code: do not modify", tag="begin"

@@ -55,7 +55,6 @@ public class ManagerOkolia extends OSPABA.Manager {
                         message = message.createCopy();
 
                     if (mySim().animatorExists()) {
-                        //mySim().pauseSimulation()
                         mySim().animator().register(f.getAnimImageItem());
                         ((MySimulation) mySim()).getAnimQueue().insert(f.getAnimImageItem());
                     }
