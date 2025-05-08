@@ -44,7 +44,7 @@ public class FurnitureQueueTableModel extends AbstractTableModel {
         if (storage == null || rowIndex < 0 || rowIndex >= storage.size()) {
             return null;
         }
-        Furniture item = storage.get(rowIndex);
+        Furniture item = storage.get(rowIndex); //skus check ci je item null
         switch (columnIndex) {
             case 0: return item.getOrderId();
             case 1: return item.getId();

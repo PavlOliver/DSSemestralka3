@@ -96,6 +96,7 @@ public class ManagerVyroby extends OSPABA.Manager {
             } else {
                 //myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
                 ((MySimulation) mySim()).getQueueKovaniaPriority().add(((MyMessage) message).getFurniture());
+                ((MySimulation) mySim()).getDlzkaKovaniaStat().addSample(((MySimulation) mySim()).getQueueKovaniaPriority().size());
             }
 
         } else {

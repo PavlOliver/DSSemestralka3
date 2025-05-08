@@ -41,6 +41,26 @@ public class Workers {
         return totalUtilization / workers.size();
     }
 
+    public double getMaxUtilization() {
+        double maxUtilization = 0;
+        for (Worker worker : workers) {
+            if (worker.getUtilityWStat().max() > maxUtilization) {
+                maxUtilization = worker.getUtilityWStat().max();
+            }
+        }
+        return maxUtilization;
+    }
+
+    public double getMinUtilization() {
+        double minUtilization = Double.MAX_VALUE;
+        for (Worker worker : workers) {
+            if (worker.getUtilityWStat().min() < minUtilization) {
+                minUtilization = worker.getUtilityWStat().min();
+            }
+        }
+        return minUtilization;
+    }
+
     public List<Worker> getWorkers() {
         return workers;
     }

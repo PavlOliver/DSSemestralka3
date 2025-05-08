@@ -77,6 +77,7 @@ public class ManagerC extends OSPABA.Manager {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorker(worker);
             Furniture furniture = ((MySimulation) mySim()).getQueueKovaniaPriority().poll();
+            ((MySimulation) mySim()).getDlzkaKovaniaStat().addSample(((MySimulation) mySim()).getQueueKovaniaPriority().size());
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -91,6 +92,7 @@ public class ManagerC extends OSPABA.Manager {
 
                 newMessage.setWorker(worker);
                 Furniture furniture = ((MySimulation) mySim()).getQueueMoreniaPriority().poll();
+                ((MySimulation) mySim()).getDlzkaMoreniaStat().addSample(((MySimulation) mySim()).getQueueMoreniaPriority().size());
                 newMessage.setFurniture(furniture);
                 newMessage.setWorkingPlace(furniture.getWorkingPlace());
                 newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
@@ -127,6 +129,7 @@ public class ManagerC extends OSPABA.Manager {
         } else {
             //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
             ((MySimulation) mySim()).getQueueMoreniaPriority().add(((MyMessage) message).getFurniture());
+            ((MySimulation) mySim()).getDlzkaMoreniaStat().addSample(((MySimulation) mySim()).getQueueMoreniaPriority().size());
             //response(message); //nic nezrobilo ani sa robit nebude
         }
     }

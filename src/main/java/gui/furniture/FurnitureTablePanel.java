@@ -15,6 +15,7 @@ public class FurnitureTablePanel extends JPanel {
         tableModel = new FurnitureTableModel(furnitureList);
         table = new JTable(tableModel);
 
+
         table.setFillsViewportHeight(true);
         table.setAutoCreateRowSorter(true);
 

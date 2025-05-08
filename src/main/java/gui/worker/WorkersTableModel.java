@@ -43,14 +43,22 @@ public class WorkersTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 0: return Integer.class;          // ID
-            case 1: return Character.class;        // Type
-            case 2: return Boolean.class;          // Busy
-            case 3: return String.class;           // Furniture
-            case 4: return String.class;           // Position
-            case 5: return String.class;           // Action
-            case 6: return Double.class;           // Utilization
-            default: return Object.class;
+            case 0:
+                return Integer.class;
+            case 1:
+                return Character.class;
+            case 2:
+                return Boolean.class;
+            case 3:
+                return String.class;
+            case 4:
+                return String.class;
+            case 5:
+                return String.class;
+            case 6:
+                return Double.class;
+            default:
+                return Object.class;
         }
     }
 
@@ -73,7 +81,6 @@ public class WorkersTableModel extends AbstractTableModel {
             case 5:
                 return w.getAction().toString();
             case 6:
-                // Priemerná obsadenosť ako pomer 0.0–1.0
                 return w.getUtilityWStat().mean();
             default:
                 return null;

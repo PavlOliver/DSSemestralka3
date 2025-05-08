@@ -84,6 +84,7 @@ public class ManagerA extends OSPABA.Manager {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setWorker(worker);
             Furniture furniture = ((MySimulation) mySim()).getQueueKovaniaPriority().poll();
+            ((MySimulation) mySim()).getDlzkaKovaniaStat().addSample(((MySimulation) mySim()).getQueueKovaniaPriority().size());
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska

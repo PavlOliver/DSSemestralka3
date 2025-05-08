@@ -25,6 +25,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import static javax.swing.SwingUtilities.invokeLater;
 
@@ -63,6 +64,8 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private XYSeries seriesUp;
     private XYSeries seriesDown;
 
+    private DoubleTablePanel resultsTablePanel;
+
 
     public MainFrame() {
         setTitle("Simulation");
@@ -81,13 +84,16 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         this.add(centerPanel, BorderLayout.CENTER);
 
         this.furnitureTablePanel = new FurnitureTablePanel(new ArrayList<>());
+        furnitureTablePanel.setBorder(BorderFactory.createTitledBorder("Furniture in system"));
         centerPanel.add(furnitureTablePanel);
         //this.add(furnitureTablePanel, BorderLayout.CENTER);
 
         this.storageTablePanel = new FurnitureQueuePanel(new SimQueue<>());
+        storageTablePanel.setBorder(BorderFactory.createTitledBorder("Storage"));
         centerPanel.add(storageTablePanel);
 
         this.workingPlacesPanel = new WorkingPlacesPanel(new WorkingPlaces(0, simulation));
+        workingPlacesPanel.setBorder(BorderFactory.createTitledBorder("Working places"));
         centerPanel.add(workingPlacesPanel);
 
         this.workersAPanel = new WorkersPanel(new Workers(0, WorkerType.A, simulation));
@@ -116,6 +122,14 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         centerPanel = new JPanel();
         this.initCenter();
 
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+
+        this.resultsTablePanel = new DoubleTablePanel();
+        leftPanel.add(this.resultsTablePanel);
+
+        this.add(leftPanel, BorderLayout.WEST);
+
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         controlPanel.setBorder(BorderFactory.createTitledBorder("Control"));
@@ -123,28 +137,39 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
 
         JTextField replicationCountField = new JTextField("500");
         replicationCountField.setMaximumSize(new Dimension(50, 25));
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(new JLabel("replications:"));
+        controlPanel.add(Box.createHorizontalStrut(5));
         controlPanel.add(replicationCountField);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
         numberOfAField = new JTextField("6");
         numberOfAField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(new JLabel("A:"));
+        controlPanel.add(Box.createHorizontalStrut(5));
         controlPanel.add(numberOfAField);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
         numberOfBField = new JTextField("6");
         numberOfBField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(new JLabel("B:"));
+        controlPanel.add(Box.createHorizontalStrut(5));
         controlPanel.add(numberOfBField);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
         numberOfCField = new JTextField("39");
         numberOfCField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(new JLabel("C:"));
+        controlPanel.add(Box.createHorizontalStrut(5));
         controlPanel.add(numberOfCField);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
         numberOfWPField = new JTextField("51");
         numberOfWPField.setMaximumSize(new Dimension(50, 25));
         controlPanel.add(new JLabel("WP:"));
+        controlPanel.add(Box.createHorizontalStrut(5));
         controlPanel.add(numberOfWPField);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
 
 //        this.sizeOfQueueMorenia = new JLabel("Size of queue Morenia: 0");
@@ -157,6 +182,9 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         JButton startSim = new JButton("Start Simulation");
         JButton startButton = new JButton("Start");
         JButton stopButton = new JButton("Stop");
+        JButton startAnimationButton = new JButton("Start Animation");
+        startAnimationButton.setEnabled(false);
+
 
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
@@ -166,6 +194,8 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.startSimulation();
             stopButton.setEnabled(true);
             startSim.setEnabled(false);
+            startAnimationButton.setEnabled(true);
+
         });
 
         stopButton.addActionListener(e -> {
@@ -174,6 +204,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
             startSim.setEnabled(true);
+            startAnimationButton.setEnabled(false);
         });
 
         JButton pauseButton = new JButton("Pause");
@@ -187,7 +218,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             }
         });
 
-        JSlider durationSlider = new JSlider(1, 4, 1);
+        JSlider durationSlider = new JSlider(1, 4, 4);
         durationSlider.setMaximumSize(new Dimension(200, 100));
         durationSlider.setMajorTickSpacing(1);
         durationSlider.setPaintTicks(true);
@@ -213,7 +244,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             }
         });
 
-        JButton startAnimationButton = new JButton("Start Animation");
         startAnimationButton.addActionListener(e -> {
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
@@ -233,8 +263,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                         initCenter();
                         centerPanel.revalidate();
                         centerPanel.repaint();
-
-
                     }
 
                     return null;
@@ -306,11 +334,71 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                     double[] confidenceInterval = simulation.getPriemernaDobaObjednavkyVSystemeStat().confidenceInterval_95();
                     seriesUp.add(simulation.currentReplication(), confidenceInterval[0] / 3600000);
                     seriesDown.add(simulation.currentReplication(), confidenceInterval[1] / 3600000);
+
+                    this.resultsTablePanel.setData(List.of(
+                            new Object[]{
+                                    "Average time in system",
+                                    simulation.getPriemernaDobaObjednavkyVSystemeStat().mean() / 3600000,
+                                    confidenceInterval[0] / 3600000,
+                                    confidenceInterval[1] / 3600000
+                            },
+                            new Object[]{
+                                    "Average Storage size",
+                                    simulation.getAvgSizeOfStorageStat().mean(),
+                                    simulation.getAvgSizeOfStorageStat().confidenceInterval_95()[0],
+                                    simulation.getAvgSizeOfStorageStat().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Average Pickling Queue size",
+                                    simulation.getAvgSizeOfPickingStat().mean(),
+                                    simulation.getAvgSizeOfPickingStat().confidenceInterval_95()[0],
+                                    simulation.getAvgSizeOfPickingStat().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Average Building Queue size",
+                                    simulation.getAvgSizeOfBuildingStat().mean(),
+                                    simulation.getAvgSizeOfBuildingStat().confidenceInterval_95()[0],
+                                    simulation.getAvgSizeOfBuildingStat().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Average Forging Queue size",
+                                    simulation.getAvgSizeOfForgingStat().mean(),
+                                    simulation.getAvgSizeOfForgingStat().confidenceInterval_95()[0],
+                                    simulation.getAvgSizeOfForgingStat().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Workers A workload",
+                                    simulation.getWorkloadA().mean(),
+                                    simulation.getWorkloadA().confidenceInterval_95()[0],
+                                    simulation.getWorkloadA().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Workers B workload",
+                                    simulation.getWorkloadB().mean(),
+                                    simulation.getWorkloadB().confidenceInterval_95()[0],
+                                    simulation.getWorkloadB().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Workers C workload",
+                                    simulation.getWorkloadC().mean(),
+                                    simulation.getWorkloadC().confidenceInterval_95()[0],
+                                    simulation.getWorkloadC().confidenceInterval_95()[1]
+                            },
+                            new Object[]{
+                                    "Unstarted orders",
+                                    simulation.getUnstartedOrdersStat().mean(),
+                                    simulation.getUnstartedOrdersStat().confidenceInterval_95()[0],
+                                    simulation.getUnstartedOrdersStat().confidenceInterval_95()[1]
+                            }
+                    ));
+
+
                 }
             });
 
             simulation.onSimulationDidFinish(s -> {
                 startSim.setEnabled(true);
+                this.simulationTimeLabel.setText("Order time in system: " + (simulation.getPriemernaDobaObjednavkyVSystemeStat().mean() / 3600000) + " h");
             });
 
             simulation.simulateAsync(Integer.parseInt(replicationCountField.getText()), (double) 249 * 8 * 60 * 60 * 1000);
@@ -318,12 +406,21 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         });
 
         controlPanel.add(startSim);
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(startButton);
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(stopButton);
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(pauseButton);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
+        controlPanel.add(new JLabel("duration:"));
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(durationSlider);
+        controlPanel.add(new JLabel("speed:"));
+        controlPanel.add(Box.createHorizontalStrut(10));
         controlPanel.add(speedSlider);
+        controlPanel.add(Box.createHorizontalStrut(10));
 
         controlPanel.add(startAnimationButton);
     }
@@ -346,6 +443,57 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             this.workersAPanel.setWorkers(((MySimulation) simulation).getWorkersA());
             this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
             this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
+
+            resultsTablePanel.setData(List.of(
+                    new Object[]{
+                            "Time in system",
+                            ((MySimulation) simulation).agentVyroby().getOrderTimeInSystemStat().mean() / 3600000,
+                            ((MySimulation) simulation).agentVyroby().getOrderTimeInSystemStat().min() / 3600000,
+                            ((MySimulation) simulation).agentVyroby().getOrderTimeInSystemStat().max() / 3600000
+                    },
+                    new Object[]{
+                            "Storage size",
+                            ((MySimulation) simulation).getStorage().lengthStatistic().mean(),
+                            ((MySimulation) simulation).getStorage().lengthStatistic().min(),
+                            ((MySimulation) simulation).getStorage().lengthStatistic().max()
+                    },
+                    new Object[]{
+                            "Pickling Queue size",
+                            ((MySimulation) simulation).getDlzkaMoreniaStat().mean(),
+                            ((MySimulation) simulation).getDlzkaMoreniaStat().min(),
+                            ((MySimulation) simulation).getDlzkaMoreniaStat().max()
+                    },
+                    new Object[]{
+                            "Building Queue size",
+                            ((MySimulation) simulation).getDlzkaSkladaniaStat().mean(),
+                            ((MySimulation) simulation).getDlzkaSkladaniaStat().min(),
+                            ((MySimulation) simulation).getDlzkaSkladaniaStat().max()
+                    },
+                    new Object[]{
+                            "Forging Queue size",
+                            ((MySimulation) simulation).getDlzkaKovaniaStat().mean(),
+                            ((MySimulation) simulation).getDlzkaKovaniaStat().min(),
+                            ((MySimulation) simulation).getDlzkaKovaniaStat().max()
+                    },
+                    new Object[]{
+                            "Workers A workload",
+                            ((MySimulation) simulation).agentVyroby().getWorkersA().getAverageUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersA().getMinUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersA().getMaxUtilization()
+                    },
+                    new Object[]{
+                            "Workers B workload",
+                            ((MySimulation) simulation).agentVyroby().getWorkersB().getAverageUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersB().getMinUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersB().getMaxUtilization()
+                    },
+                    new Object[]{
+                            "Workers C workload",
+                            ((MySimulation) simulation).agentVyroby().getWorkersC().getAverageUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersC().getMinUtilization(),
+                            ((MySimulation) simulation).agentVyroby().getWorkersC().getMaxUtilization()
+                    }
+            ));
 
 //            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).getQueueMoreniaPriority().size());
 //            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).getQueueSkladaniaPriority().size());
@@ -389,10 +537,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         //simulation = new MySimulation();
         simulation.createAnimator();
         simulation.startAnimation();
-
-        AnimTextItem simulationTimeItem = new AnimTextItem("Simulation time: 0.0");
-        simulationTimeItem.setPosition(new Point(100, 500));
-        simulation.animator().register(simulationTimeItem);
 
         centerPanel.add(simulation.animator().canvas());
         //this.setLayout(null);

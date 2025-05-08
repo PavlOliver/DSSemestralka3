@@ -12,6 +12,7 @@ import worker.WorkerState;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 //meta! id="28"
 public class ProcessPresunSklad extends OSPABA.Process {
@@ -50,9 +51,10 @@ public class ProcessPresunSklad extends OSPABA.Process {
                             moveTime,
                             new Point((int) (wp.getX() + 50), (int) (wp.getY() + 50)));
                 } else {
+                    Random random = new Random();
                     ((MyMessage) message).getWorker().getAnimImageItem().moveTo(mySim().currentTime(),
                             moveTime,
-                            new Point((int) (1300 + 50), (int) (200 + 50)));
+                            new Point(random.nextInt(1300, 1650), random.nextInt(0, 950)));
                 }
             }
         }

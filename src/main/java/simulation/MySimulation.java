@@ -32,8 +32,11 @@ public class MySimulation extends OSPABA.Simulation {
     private SimQueue<Furniture> storage;
     private WStat dlzkaStorageStat;
     private PriorityQueue<Furniture> queueSkladaniaPriority;
+    WStat dlzkaSkladaniaStat;
     private PriorityQueue<Furniture> queueMoreniaPriority;
+    private WStat dlzkaMoreniaStat;
     private PriorityQueue<Furniture> queueKovaniaPriority;
+    private WStat dlzkaKovaniaStat;
 
 
     private int orderId;
@@ -44,6 +47,11 @@ public class MySimulation extends OSPABA.Simulation {
     private Stat workloadA;
     private Stat workloadB;
     private Stat workloadC;
+
+    private Stat avgSizeOfBuildingStat;
+    private Stat avgSizeOfPickingStat;
+    private Stat avgSizeOfForgingStat;
+    private Stat avgSizeOfStorageStat;
 
     private Stat unstartedOrdersStat;
 
@@ -86,6 +94,12 @@ public class MySimulation extends OSPABA.Simulation {
         workloadA = new Stat();
         workloadB = new Stat();
         workloadC = new Stat();
+
+        avgSizeOfBuildingStat = new Stat();
+        avgSizeOfPickingStat = new Stat();
+        avgSizeOfForgingStat = new Stat();
+        avgSizeOfStorageStat = new Stat();
+
         unstartedOrdersStat = new Stat();
 
         this.startAnimation();
@@ -101,7 +115,11 @@ public class MySimulation extends OSPABA.Simulation {
 
     public void startAnimation() {
         if (this.animatorExists()) {
-            AnimImageItem storageItem = new AnimImageItem(Data.storageImg, 400, 1000);
+            //AnimImageItem storageItem = new AnimImageItem(Data.storageImg, 400, 1000);
+            //storageItem.setPosition(new Point(1300, 0));
+
+            AnimShapeItem storageItem = new AnimShapeItem(AnimShape.RECTANGLE_EMPTY, 400, 1000);
+            storageItem.setColor(Color.BLACK);
             storageItem.setPosition(new Point(1300, 0));
             animator().register(storageItem);
 
@@ -144,6 +162,10 @@ public class MySimulation extends OSPABA.Simulation {
         queueMoreniaPriority = new PriorityQueue<>();
         queueKovaniaPriority = new PriorityQueue<>();
 
+        dlzkaSkladaniaStat = new WStat(this);
+        dlzkaStorageStat = new WStat(this);
+        dlzkaMoreniaStat = new WStat(this);
+        dlzkaKovaniaStat = new WStat(this);
     }
 
     @Override
@@ -157,6 +179,11 @@ public class MySimulation extends OSPABA.Simulation {
         for (Worker w : this.getWorkersA().getWorkers()) {
             w.getUtilityWStat().updateAfterReplication();
         }
+        dlzkaStorageStat.updateAfterReplication();
+        dlzkaSkladaniaStat.updateAfterReplication();
+        dlzkaMoreniaStat.updateAfterReplication();
+        dlzkaKovaniaStat.updateAfterReplication();
+
         // Collect local statistics into global, update UI, etc...
         super.replicationFinished();
         priemernaDobaObjednavkyVSystemeStat.addSample(agentVyroby().getOrderTimeInSystemStat().mean());
@@ -166,6 +193,11 @@ public class MySimulation extends OSPABA.Simulation {
         workloadC.addSample(agentVyroby().getWorkersC().getAverageUtilization());
         unstartedOrdersStat.addSample(agentVyroby().getFinishedFurnitureList().getUnstartedFurnituresCount());
         averageOrderTime += agentVyroby().getOrderTimeInSystem() / agentVyroby().getFinishedOrderCount();
+
+        this.avgSizeOfBuildingStat.addSample(this.dlzkaSkladaniaStat.mean());
+        this.avgSizeOfPickingStat.addSample(this.dlzkaMoreniaStat.mean());
+        this.avgSizeOfForgingStat.addSample(this.dlzkaKovaniaStat.mean());
+        this.avgSizeOfStorageStat.addSample(this.storage.lengthStatistic().mean());
 
 //        System.out.println("Priemerne vytazenie A" + agentVyroby().getWorkersA().getAverageUtilization());
 //        System.out.println("Priemerne vytazenie B" + agentVyroby().getWorkersB().getAverageUtilization());
@@ -193,7 +225,7 @@ public class MySimulation extends OSPABA.Simulation {
         System.out.println("Workload A: " + workloadA.mean());
         System.out.println("Workload B: " + workloadB.mean());
         System.out.println("Workload C: " + workloadC.mean());
-        if(replicationCount() > 1) {
+        if (replicationCount() > 1) {
 
             String result = String.format("%.2f<%.2f - %.2f>",
                     priemernaDobaObjednavkyVSystemeStat.mean() / 60 / 60 / 1000,
@@ -320,6 +352,54 @@ public class MySimulation extends OSPABA.Simulation {
 
     public PriorityQueue<Furniture> getQueueSkladaniaPriority() {
         return queueSkladaniaPriority;
+    }
+
+    public WStat getDlzkaSkladaniaStat() {
+        return dlzkaSkladaniaStat;
+    }
+
+    public WStat getDlzkaMoreniaStat() {
+        return dlzkaMoreniaStat;
+    }
+
+    public WStat getDlzkaKovaniaStat() {
+        return dlzkaKovaniaStat;
+    }
+
+    public WStat getDlzkaStorageStat() {
+        return dlzkaStorageStat;
+    }
+
+    public Stat getAvgSizeOfBuildingStat() {
+        return avgSizeOfBuildingStat;
+    }
+
+    public Stat getAvgSizeOfPickingStat() {
+        return avgSizeOfPickingStat;
+    }
+
+    public Stat getAvgSizeOfForgingStat() {
+        return avgSizeOfForgingStat;
+    }
+
+    public Stat getAvgSizeOfStorageStat() {
+        return avgSizeOfStorageStat;
+    }
+
+    public Stat getWorkloadA() {
+        return workloadA;
+    }
+
+    public Stat getWorkloadB() {
+        return workloadB;
+    }
+
+    public Stat getWorkloadC() {
+        return workloadC;
+    }
+
+    public Stat getUnstartedOrdersStat() {
+        return unstartedOrdersStat;
     }
 
     public PriorityQueue<Furniture> getQueueMoreniaPriority() {

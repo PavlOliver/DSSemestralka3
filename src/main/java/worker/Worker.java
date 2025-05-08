@@ -9,6 +9,7 @@ import workingplace.WorkingPlace;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 public class Worker {
     private final int id;
@@ -43,7 +44,8 @@ public class Worker {
                 Point2D wp = workingPlace.getAnimShapeItem().getPosition(mySim.currentTime());
                 this.animImageItem.setPosition(new Point((int) (wp.getX() + 50), (int) (wp.getY() + 50)));
             } else {
-                this.getAnimImageItem().setPosition(new Point(id * 50 + 1300, type.getValue() * 50 + 200));
+                Random random = new Random();
+                this.getAnimImageItem().setPosition(new Point(random.nextInt(1300, 1650), random.nextInt(type.getValue() * 333, type.getValue() * 333 + 250)));
             }
         }
     }
