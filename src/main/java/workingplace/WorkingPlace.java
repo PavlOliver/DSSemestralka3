@@ -81,7 +81,7 @@ public class WorkingPlace {
     }
 
     public boolean isOccupied() {
-        return currentFurniture != null;//urrentWorker != null && currentFurniture != null;
+        return currentFurniture != null;
     }
 
     public WStat getUtilityWStat() {

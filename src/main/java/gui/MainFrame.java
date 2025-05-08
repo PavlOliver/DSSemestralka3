@@ -2,7 +2,6 @@ package gui;
 
 import OSPABA.SimState;
 import OSPABA.Simulation;
-import OSPAnimator.AnimTextItem;
 import OSPDataStruct.SimQueue;
 import gui.furniture.FurnitureQueuePanel;
 import gui.furniture.FurnitureTablePanel;
@@ -171,14 +170,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         controlPanel.add(numberOfWPField);
         controlPanel.add(Box.createHorizontalStrut(10));
 
-
-//        this.sizeOfQueueMorenia = new JLabel("Size of queue Morenia: 0");
-//        this.sizeOfQueueStavania = new JLabel("Size of queue Stavania: 0");
-//        this.sizeOfQueueKovania = new JLabel("Size of queue Kovania: 0");
-//        controlPanel.add(sizeOfQueueMorenia);
-//        controlPanel.add(sizeOfQueueStavania);
-//        controlPanel.add(sizeOfQueueKovania);
-
         JButton startSim = new JButton("Start Simulation");
         JButton startButton = new JButton("Start");
         JButton stopButton = new JButton("Stop");
@@ -190,7 +181,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
             startButton.setEnabled(false);
             stopFlag = false;
 
-            //animation = false;
             this.startSimulation();
             stopButton.setEnabled(true);
             startSim.setEnabled(false);
@@ -437,12 +427,14 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     public void refresh(Simulation simulation) {
         invokeLater(() -> {
             this.simulationTimeLabel.setText("Simulation time: " + TimeFunctions.toHumanTime(simulation.currentTime()));
-            this.furnitureTablePanel.setFurnitureList(((MySimulation) simulation).getFurnitures());
-            this.storageTablePanel.setStorage(((MySimulation) simulation).getStorage());
-            this.workingPlacesPanel.setWorkingPlaces(((MySimulation) simulation).getWorkingPlaces());
-            this.workersAPanel.setWorkers(((MySimulation) simulation).getWorkersA());
-            this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
-            this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
+            try {
+                this.furnitureTablePanel.setFurnitureList(((MySimulation) simulation).getFurnitures());
+                this.storageTablePanel.setStorage(((MySimulation) simulation).getStorage());
+                this.workingPlacesPanel.setWorkingPlaces(((MySimulation) simulation).getWorkingPlaces());
+                this.workersAPanel.setWorkers(((MySimulation) simulation).getWorkersA());
+                this.workersBPanel.setWorkers(((MySimulation) simulation).getWorkersB());
+                this.workersCPanel.setWorkers(((MySimulation) simulation).getWorkersC());
+            } catch (Exception _) {}
 
             resultsTablePanel.setData(List.of(
                     new Object[]{
@@ -494,12 +486,7 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
                             ((MySimulation) simulation).agentVyroby().getWorkersC().getMaxUtilization()
                     }
             ));
-
-//            this.sizeOfQueueMorenia.setText("Size of queue Morenia: " + ((MySimulation) simulation).getQueueMoreniaPriority().size());
-//            this.sizeOfQueueStavania.setText("Size of queue Stavania: " + ((MySimulation) simulation).getQueueSkladaniaPriority().size());
-//            this.sizeOfQueueKovania.setText("Size of queue Kovania: " + ((MySimulation) simulation).getQueueKovaniaPriority().size());
         });
-        //this.simulationTimeLabel.setText("Simulation time: " + Mc.toHumanTime(simulation.currentTime()));
     }
 
     private void startSimulation() {
@@ -523,7 +510,6 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
         centerPanel.repaint();
         simulation.registerDelegate(MainFrame.this);
         simulation.setSimSpeed(simInterval, simDuration);
-        //simulation.simulate(Integer.parseInt(replicationCountField.getText()), (double) 249 * 8 * 60 * 60 * 1000);
         simulation.simulateAsync(1, (double) 249 * 8 * 60 * 60 * 1000);
 
         if (animation) {
@@ -534,15 +520,12 @@ public class MainFrame extends JFrame implements OSPABA.ISimDelegate {
     private void startAnimation() {
         centerPanel.removeAll();
 
-        //simulation = new MySimulation();
         simulation.createAnimator();
         simulation.startAnimation();
 
         centerPanel.add(simulation.animator().canvas());
-        //this.setLayout(null);
         simulation.animator().canvas().setBounds(0, 0, MainFrame.this.getWidth(), MainFrame.this.getHeight());
         simulation.animator().canvas().setVisible(true);
-        //simulation.animator().setSimSpeed(1, 0.1);
         simulation.setSimSpeed(simInterval, simDuration);
         simulation.animator().setSynchronizedTime(true);
     }

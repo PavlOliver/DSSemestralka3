@@ -121,16 +121,13 @@ public class ManagerC extends OSPABA.Manager {
     //meta! sender="AgentVyroby", id="21", type="Request"
     public void processMorenie(MessageForm message) {
 //        System.out.println("Ziadam presun na morenie v case:" + mySim().currentTime());
-        //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
         if (((MyMessage) message).getWorker() != null) {
             message.setCode(Mc.presun);
             message.setAddressee(mySim().findAgent(Id.agentVyroby));
             request(message);
         } else {
-            //myAgent().getQueueMorenia().enqueue(((MyMessage) message).getFurniture());
             ((MySimulation) mySim()).getQueueMoreniaPriority().add(((MyMessage) message).getFurniture());
             ((MySimulation) mySim()).getDlzkaMoreniaStat().addSample(((MySimulation) mySim()).getQueueMoreniaPriority().size());
-            //response(message); //nic nezrobilo ani sa robit nebude
         }
     }
 

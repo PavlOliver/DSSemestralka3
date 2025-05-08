@@ -30,8 +30,6 @@ public class FinishedFurnitureList {
             }
         }
         return -1d;
-//        FinishedFurnitures newFinishedFurniture = new FinishedFurnitures(furniture.getOrderId(), 1);
-//        finishedFurnituresList.add(newFinishedFurniture);
     }
 
     public void addStartedFurniture(Furniture furniture) {

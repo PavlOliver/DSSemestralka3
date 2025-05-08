@@ -44,9 +44,7 @@ public class ManagerA extends OSPABA.Manager {
 
     //meta! sender="ProcessKovanieA", id="38", type="Finish"
     public void processFinishProcessKovanieA(MessageForm message) {
-        //System.out.println("Pracovnik A skoncil kovanie");
         ((MyMessage) message).getFurniture().setState(FurnitureState.FORGED, mySim().currentTime());
-//        this.startWorking((MyMessage) message);//asik
         findNewJob((MyMessage) message);
 
         message.setCode(Mc.kovanie);
@@ -73,7 +71,6 @@ public class ManagerA extends OSPABA.Manager {
     }
 
     private void findNewJob(MyMessage message) {
-        //message.getWorker().setBusy(false);
         message.getWorker().setCurrentFurniture(null);
         message.getWorkingPlace().setCurrentWorker(null);
         Worker worker = message.getWorker();
@@ -88,7 +85,6 @@ public class ManagerA extends OSPABA.Manager {
             newMessage.setFurniture(furniture);
             newMessage.setWorkingPlace(furniture.getWorkingPlace());
             newMessage.getWorkingPlace().setCurrentWorker(worker);//skuska
-            //worker.setBusy(true);
             worker.setCurrentFurniture(furniture);
 
             newMessage.setCode(Mc.presun);
@@ -141,13 +137,9 @@ public class ManagerA extends OSPABA.Manager {
         Worker worker = ((AgentVyroby) myAgent().parent()).getWorkersA().getFreeWorker();
 
         if (worker != null) {
-            //worker.setBusy(true); !!!!!!!
             ((MyMessage) message).setWorker(worker);
             startWorking((MyMessage) message);
-        } else {
-            //response(message); //sam neviem co robit ked neni pracovnik
         }
-
     }
 
     //meta! userInfo="Process messages defined in code", id="0"

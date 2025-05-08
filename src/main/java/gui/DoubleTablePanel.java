@@ -15,9 +15,6 @@ public class DoubleTablePanel extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    /**
-     * Nastaví dáta tabuľky cez model.
-     */
     public void setData(List<Object[]> data) {
         model.setData(data);
     }

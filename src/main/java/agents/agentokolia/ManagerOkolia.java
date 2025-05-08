@@ -27,8 +27,6 @@ public class ManagerOkolia extends OSPABA.Manager {
         if (petriNet() != null) {
             petriNet().clear();
         }
-
-        //mySim().animator().register(animQueue);
     }
 
     //meta! sender="PlanovacPrichodov", id="26", type="Finish"

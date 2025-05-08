@@ -51,7 +51,6 @@ public class ManagerVyroby extends OSPABA.Manager {
 //            System.out.println("Priemerna doba v systeme:" + myAgent().getOrderTimeInSystemStat().mean() / 60000);
         }
 
-        //todo uvolnil sa stol takze moze ist A
         if (!((MySimulation) mySim()).getStorage().isEmpty()) {
             MyMessage newMessage = (MyMessage) message.createCopy();
             newMessage.setFurniture(null);
@@ -94,14 +93,13 @@ public class ManagerVyroby extends OSPABA.Manager {
                 message.setCode(Mc.kovanie);
                 request(message);
             } else {
-                //myAgent().getQueueKovania().enqueue(((MyMessage) message).getFurniture());
                 ((MySimulation) mySim()).getQueueKovaniaPriority().add(((MyMessage) message).getFurniture());
                 ((MySimulation) mySim()).getDlzkaKovaniaStat().addSample(((MySimulation) mySim()).getQueueKovaniaPriority().size());
             }
 
         } else {
 //            System.out.println("Skladanie dokoncene uplne:" + mySim().currentTime());
-            ((MyMessage) message).getWorkingPlace().setCurrentWorker(null); //todo este nvm ci to nechat tu alebo dat do agentaB
+            ((MyMessage) message).getWorkingPlace().setCurrentWorker(null);
             this.finishFurniture((MyMessage) message);
         }
     }

@@ -9,8 +9,6 @@ public class Data {
     public static final String chairImg = "src/main/java/chair.png";
     public static final String wardrobeImg = "src/main/java/wardrobe.png";
 
-    public static final String storageImg = "src/main/java/storage.png";
-
     public static final String cuttingImg = "src/main/java/rezanie.png";
     public static final String buildingImg = "src/main/java/skladanie.png";
     public static final String picklingImg = "src/main/java/morenie.png";
